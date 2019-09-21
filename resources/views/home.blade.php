@@ -1,11 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header">You are logged in!
+                    Welcome {{$user_type}}</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -13,9 +14,9 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    
+                    <user-list-component :Num="{{Auth::user()->id}}"/>
 
-                    You are logged in!
-                    Welcome {{$user_type}}
                 </div>
             </div>
         </div>
