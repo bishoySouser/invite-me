@@ -15,7 +15,7 @@
                         </div>
                     @endif
                     
-                    <user-list-component :Num="{{Auth::user()->id}}"/>
+                    <user-list-component :num="{{Auth::user()->id}}"/>
 
                 </div>
             </div>

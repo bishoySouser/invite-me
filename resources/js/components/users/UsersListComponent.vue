@@ -15,7 +15,7 @@ import UserCard from "./UserCardComponent";
 export default {
     name:'UserList',
     props:[
-        'Num'
+        'num'
     ],
     components: {
         UserCard
@@ -25,7 +25,7 @@ export default {
     }),
     created(){
             const baseUrl = 'http://localhost:8000/api/v1/';
-            axios.get(baseUrl +'user/list/'+ this.Num)
+            axios.get(baseUrl +'user/list/'+ this.num)
              .then((res) => {
                 this.users = res.data.users;
                 console.log(this.users);

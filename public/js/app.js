@@ -1915,7 +1915,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'UserList',
-  props: ['Num'],
+  props: ['num'],
   components: {
     UserCard: _UserCardComponent__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
@@ -1928,7 +1928,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     var baseUrl = 'http://localhost:8000/api/v1/';
-    axios.get(baseUrl + 'user/list/' + this.Num).then(function (res) {
+    axios.get(baseUrl + 'user/list/' + this.num).then(function (res) {
       _this.users = res.data.users;
       console.log(_this.users);
     })["catch"](function (_ref) {
