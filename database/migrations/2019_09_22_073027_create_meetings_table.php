@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserTypeTable extends Migration
+class CreateMeetingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,14 @@ class CreateUserTypeTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_type', function (Blueprint $table) {
+        Schema::create('meetings', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('type',15);
+            $table->bigInteger('meeting_owner');
+            $table->bigInteger('invitee');
+            $table->string('subject');
+            $table->text('description');
+            $table->date('meeting_data');
+            $table->time('time');
             $table->timestamps();
         });
     }
@@ -27,6 +32,6 @@ class CreateUserTypeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_type');
+        Schema::dropIfExists('meetings');
     }
 }

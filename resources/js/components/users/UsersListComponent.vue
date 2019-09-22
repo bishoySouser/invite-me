@@ -1,24 +1,35 @@
 <template>
     <div id="user-list">
         <div  class="row justify-content-center text-center">
-            <UserCard v-for="user in users"
-             :key="user.id"
-             :name="user.first_name"
-             :email="user.email"
-             :type="user.type"
+            <UserCard 
+                v-for="user in users"
+                :key="user.id"
+                :id="user.id"
+                :name="user.first_name"
+                :email="user.email"
+                :type="user.type"
              />
         </div>
+        
+        <MeetingModel 
+            v-for="user in users"
+            :key="user.id"
+            :id="user.id"
+            :name="user.first_name"
+        />
     </div>
 </template>
 <script>
 import UserCard from "./UserCardComponent";
+import MeetingModel from "../models/ModelMeetingComponent";
 export default {
     name:'UserList',
     props:[
         'num'
     ],
     components: {
-        UserCard
+        UserCard,
+        MeetingModel
     },
     data: () => ({
         users: []

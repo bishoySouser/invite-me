@@ -3,11 +3,14 @@
         <div class="card" style="width: 10rem;">
         <img src="#" class="card-img-top" alt="...">
         <div class="card-body">
-        <h5 class="card-title">{{name}}</h5>
-        <p class="card-text">{{email}}</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+            <h5 class="card-title">{{name}}</h5>
+            <p class="card-text">{{email}}</p>
+            <a class="btn btn-primary" data-toggle="modal" :data-target="'#model'+id">Meeting</a>
+            <a class="btn btn-primary">Message</a>
+            
         </div>
         </div>
+        
     </div>
 </template>
 <script>
