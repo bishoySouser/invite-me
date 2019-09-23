@@ -1925,11 +1925,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'UserList',
-  props: ['num'],
+  props: ['invitee'],
   components: {
     UserCard: _UserCardComponent__WEBPACK_IMPORTED_MODULE_0__["default"],
     MeetingModel: _models_ModelMeetingComponent__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -1943,7 +1944,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     var baseUrl = 'http://localhost:8000/api/v1/';
-    axios.get(baseUrl + 'user/list/' + this.num).then(function (res) {
+    axios.get(baseUrl + 'user/list/' + this.invitee.id).then(function (res) {
       _this.users = res.data.users;
       console.log(_this.users);
     })["catch"](function (_ref) {
@@ -2015,29 +2016,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ModelMeeting',
-  props: ['id', 'name'],
+  props: ['id', 'inviteeName'],
   components: {
     DatePicker: vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default.a
   },
   data: function data() {
     return {
-      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-      value1: '',
-      value2: '',
-      value3: '',
+      meeting_owner: '',
+      invitee: this.inviteeName,
+      subject: '',
+      description: '',
+      date: '',
+      time: '',
       timePickerOptions: {
         start: '9:00',
         step: '00:30',
         end: '22:00'
       }
     };
+  },
+  methods: {
+    onSubmit: function onSubmit() {
+      var formData = new FormData();
+      formData.append("meeting_owner", this.meeting_owner);
+      formData.append("invitee", this.invitee);
+      formData.append("subject", this.subject);
+      formData.append("description", this.description);
+      formData.append("date", this.date);
+      formData.append("time", this.time);
+      console.log(formData);
+    }
   }
 });
 
@@ -37453,10 +37464,14 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _vm._l(_vm.users, function(user) {
+      _vm._l(_vm.users, function(value) {
         return _c("MeetingModel", {
-          key: user.id,
-          attrs: { id: user.id, name: user.first_name }
+          key: value.id,
+          attrs: {
+            id: value.id,
+            name: value.first_name,
+            inviteeName: _vm.invitee.first_name
+          }
         })
       })
     ],
@@ -37488,7 +37503,7 @@ var render = function() {
   return _c(
     "div",
     {
-      class: "modal" + _vm.id + " fade bd-example-modal-lg",
+      staticClass: "modal fade bd-example-modal-lg",
       attrs: {
         id: "model" + _vm.id,
         tabindex: "-1",
@@ -37503,108 +37518,207 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "modal-body" }, [
-            _c("form", { attrs: { method: "POST", action: "/home" } }, [
-              _c("input", {
-                attrs: { type: "hidden", name: "_token" },
-                domProps: { value: _vm.csrf }
-              }),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-group row" }, [
-                _c(
-                  "label",
-                  {
-                    staticClass: "col-sm-2 col-form-label",
-                    attrs: { for: "inputInvitee" }
-                  },
-                  [_vm._v("Inivtee")]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-sm-10" }, [
-                  _c("input", {
-                    staticClass: "form-control",
-                    attrs: { type: "text", id: "inputInvitee", disabled: "" },
-                    domProps: { value: _vm.name }
-                  })
-                ])
-              ]),
-              _vm._v(" "),
-              _vm._m(1),
-              _vm._v(" "),
-              _vm._m(2),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-group row" }, [
-                _c(
-                  "label",
-                  {
-                    staticClass: "col-sm-2 col-form-label",
-                    attrs: { for: "inputDate" }
-                  },
-                  [_vm._v("Date")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col-sm-10" },
-                  [
-                    _c("date-picker", {
-                      attrs: { lang: "en", valueType: "format" },
-                      model: {
-                        value: _vm.value1,
-                        callback: function($$v) {
-                          _vm.value1 = $$v
-                        },
-                        expression: "value1"
+            _c(
+              "form",
+              {
+                attrs: { method: "POST" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.onSubmit($event)
+                  }
+                }
+              },
+              [
+                _c("div", { staticClass: "form-group row" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-sm-2 col-form-label",
+                      attrs: { for: "inputInvitee" }
+                    },
+                    [_vm._v("Inivtee")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-10" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.invitee,
+                          expression: "invitee"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", id: "inputInvitee", disabled: "" },
+                      domProps: { value: _vm.invitee },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.invitee = $event.target.value
+                        }
                       }
                     })
-                  ],
-                  1
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-group row" }, [
-                _c(
-                  "label",
-                  {
-                    staticClass: "col-sm-2 col-form-label",
-                    attrs: { for: "inputTime" }
-                  },
-                  [_vm._v("Time")]
-                ),
+                  ])
+                ]),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col-sm-10" },
-                  [
-                    _c("date-picker", {
+                _c("div", { staticClass: "form-group row" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-sm-2 col-form-label",
+                      attrs: { for: "inputSubject" }
+                    },
+                    [_vm._v("Subject")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-10" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.subject,
+                          expression: "subject"
+                        }
+                      ],
+                      staticClass: "form-control",
                       attrs: {
-                        lang: "en",
-                        type: "time",
-                        format: "hh:mm:ss a",
-                        "time-picker-options": _vm.timePickerOptions,
-                        placeholder: "Select Time"
+                        type: "text",
+                        placeholder: "subject",
+                        id: "inputSubject"
                       },
-                      model: {
-                        value: _vm.value2,
-                        callback: function($$v) {
-                          _vm.value2 = $$v
-                        },
-                        expression: "value2"
+                      domProps: { value: _vm.subject },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.subject = $event.target.value
+                        }
                       }
                     })
-                  ],
-                  1
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group row" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-sm-2 col-form-label",
+                      attrs: { for: "inputDescription" }
+                    },
+                    [_vm._v("Description")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-10" }, [
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.description,
+                          expression: "description"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        placeholder: "description",
+                        rows: "3",
+                        id: "inputDescription"
+                      },
+                      domProps: { value: _vm.description },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.description = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group row" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-sm-2 col-form-label",
+                      attrs: { for: "inputDate" }
+                    },
+                    [_vm._v("Date")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "col-sm-10" },
+                    [
+                      _c("date-picker", {
+                        attrs: { lang: "en", valueType: "format" },
+                        model: {
+                          value: _vm.date,
+                          callback: function($$v) {
+                            _vm.date = $$v
+                          },
+                          expression: "date"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group row" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-sm-2 col-form-label",
+                      attrs: { for: "inputTime" }
+                    },
+                    [_vm._v("Time")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "col-sm-10" },
+                    [
+                      _c("date-picker", {
+                        attrs: {
+                          lang: "en",
+                          type: "time",
+                          format: "HH:mm a",
+                          "time-picker-options": _vm.timePickerOptions,
+                          placeholder: "Select Time"
+                        },
+                        model: {
+                          value: _vm.time,
+                          callback: function($$v) {
+                            _vm.time = $$v
+                          },
+                          expression: "time"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary float-right",
+                    attrs: { type: "submit" }
+                  },
+                  [_vm._v("Save changes")]
                 )
-              ]),
-              _vm._v(" "),
-              _c(
-                "button",
-                { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-                [_vm._v("Save changes")]
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _vm._m(3)
+              ]
+            )
+          ])
         ])
       ])
     ]
@@ -37633,70 +37747,6 @@ var staticRenderFns = [
           }
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row" }, [
-      _c(
-        "label",
-        {
-          staticClass: "col-sm-2 col-form-label",
-          attrs: { for: "inputSubject" }
-        },
-        [_vm._v("Subject")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-sm-10" }, [
-        _c("input", {
-          staticClass: "form-control",
-          attrs: { type: "text", placeholder: "subject", id: "inputSubject" }
-        })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row" }, [
-      _c(
-        "label",
-        {
-          staticClass: "col-sm-2 col-form-label",
-          attrs: { for: "inputDescription" }
-        },
-        [_vm._v("Description")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-sm-10" }, [
-        _c("textarea", {
-          staticClass: "form-control",
-          attrs: {
-            type: "text",
-            placeholder: "description",
-            rows: "3",
-            id: "inputDescription"
-          }
-        })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-secondary",
-          attrs: { type: "button", "data-dismiss": "modal" }
-        },
-        [_vm._v("Close")]
       )
     ])
   }

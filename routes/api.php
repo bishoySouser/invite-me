@@ -16,5 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+//users
 Route::get('v1/user/list/{id}','Api\UserController@userList');
+
+//meeting
+Route::post('v1/meeting/create','Api\MeetingController@createMeeting');

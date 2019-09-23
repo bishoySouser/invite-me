@@ -15,7 +15,10 @@
                         </div>
                     @endif
                     
-                    <user-list-component :num="{{Auth::user()->id}}"/>
+                    <user-list-component
+                    :invitee="{{Auth::user()}}"
+                    
+                    />
 
                 </div>
             </div>

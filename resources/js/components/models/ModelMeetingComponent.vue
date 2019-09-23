@@ -1,5 +1,5 @@
 <template>
-    <div :id="'model'+id" :class="'modal'+id+' fade bd-example-modal-lg'" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div :id="'model'+id" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -9,43 +9,39 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="/home">
-                        <input type="hidden" name="_token" :value="csrf">
+                    <form method="POST" @submit.prevent="onSubmit">
                         <div class="form-group row">
                             <label for="inputInvitee" class="col-sm-2 col-form-label">Inivtee</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" :value="name" id="inputInvitee" disabled>
+                                <input type="text" class="form-control" v-model="invitee" id="inputInvitee" disabled>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputSubject" class="col-sm-2 col-form-label">Subject</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="subject" id="inputSubject">
+                                <input type="text" class="form-control" v-model="subject" placeholder="subject" id="inputSubject">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputDescription" class="col-sm-2 col-form-label">Description</label>
                             <div class="col-sm-10">
-                                <textarea type="text" class="form-control" placeholder="description" rows="3" id="inputDescription"></textarea>
+                                <textarea type="text" class="form-control" v-model="description" placeholder="description" rows="3" id="inputDescription"></textarea>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputDate" class="col-sm-2 col-form-label">Date</label>
                             <div class="col-sm-10">
-                                <date-picker v-model="value1" lang="en" valueType="format"></date-picker>
+                                <date-picker lang="en" v-model="date" valueType="format"></date-picker>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputTime" class="col-sm-2 col-form-label">Time</label>
                             <div class="col-sm-10">
-                                 <date-picker v-model="value2" lang="en" type="time" format="hh:mm:ss a" :time-picker-options="timePickerOptions" placeholder="Select Time"></date-picker>
+                                 <date-picker lang="en" type="time" v-model="time" format="HH:mm a" :time-picker-options="timePickerOptions" placeholder="Select Time"></date-picker>
                             </div>
                         </div>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary float-right">Save changes</button>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -58,20 +54,36 @@ export default {
     name:'ModelMeeting',
     props: [
         'id',
-        'name'
+        'inviteeName',
     ],
     components: { DatePicker },
-    data: () => ({
-        csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        value1: '',
-        value2: '',
-        value3: '',
-        timePickerOptions:{
-            start: '9:00',
-            step: '00:30',
-            end: '22:00'
-      }
-    })
+    data () {
+        return{
+            meeting_owner:'',
+            invitee: this.inviteeName,
+            subject:'',
+            description:'',
+            date:'',
+            time:''
+            ,
+            timePickerOptions:{
+                start: '9:00',
+                step: '00:30',
+                end: '22:00'
+      }}
+    },
+    methods:{
+        onSubmit: function(){
+            const formData = new FormData();
+            formData.append("meeting_owner", this.meeting_owner);
+            formData.append("invitee", this.invitee);
+            formData.append("subject", this.subject);
+            formData.append("description", this.description);
+            formData.append("date", this.date);
+            formData.append("time", this.time);   
+            console.log(formData);
+        }
+    }
 }
 </script>
 <style lang="scss" scoped>

@@ -12,10 +12,11 @@
         </div>
         
         <MeetingModel 
-            v-for="user in users"
-            :key="user.id"
-            :id="user.id"
-            :name="user.first_name"
+            v-for="value in users"
+            :key="value.id"
+            :id="value.id"
+            :name="value.first_name"
+            :inviteeName="invitee.first_name"
         />
     </div>
 </template>
@@ -25,7 +26,7 @@ import MeetingModel from "../models/ModelMeetingComponent";
 export default {
     name:'UserList',
     props:[
-        'num'
+        'invitee'
     ],
     components: {
         UserCard,
@@ -36,7 +37,7 @@ export default {
     }),
     created(){
             const baseUrl = 'http://localhost:8000/api/v1/';
-            axios.get(baseUrl +'user/list/'+ this.num)
+            axios.get(baseUrl +'user/list/'+ this.invitee.id)
              .then((res) => {
                 this.users = res.data.users;
                 console.log(this.users);

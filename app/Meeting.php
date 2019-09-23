@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Meeting extends Model
 {
     protected $fillable = [
-            'meeting_owner', 'invitee', 'subject',
-            'description', 'meeting_data', 'start_time',
-            'finish_time', 'long', 'lat',
+            'owner', 'invitee', 'subject',
+            'description', 'date', 'start_time', 'finish_time'
     ];
 }
