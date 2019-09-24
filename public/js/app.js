@@ -1926,6 +1926,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1943,10 +1954,9 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    var baseUrl = 'http://localhost:8000/api/v1/';
+    var baseUrl = 'http://localhost:9000/api/v1/';
     axios.get(baseUrl + 'user/list/' + this.invitee.id).then(function (res) {
-      _this.users = res.data.users;
-      console.log(_this.users);
+      _this.users = res.data.users; // console.log(this.users);
     })["catch"](function (_ref) {
       var response = _ref.response;
       _this.errors = response.data.errors;
@@ -2019,18 +2029,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ModelMeeting',
-  props: ['id', 'inviteeName'],
+  props: ['id', 'inviteeId', 'inviteeName'],
   components: {
     DatePicker: vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default.a
   },
   data: function data() {
     return {
-      meeting_owner: '',
       invitee: this.inviteeName,
-      subject: '',
-      description: '',
-      date: '',
-      time: '',
+      time: "",
+      feedback: [],
+      form: {
+        owner: this.id,
+        invitee: this.inviteeId,
+        subject: "",
+        description: "",
+        date: "",
+        start_time: ""
+      },
       timePickerOptions: {
         start: '9:00',
         step: '00:30',
@@ -2040,14 +2055,37 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     onSubmit: function onSubmit() {
+      var _this = this;
+
+      var config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
       var formData = new FormData();
-      formData.append("meeting_owner", this.meeting_owner);
-      formData.append("invitee", this.invitee);
-      formData.append("subject", this.subject);
-      formData.append("description", this.description);
-      formData.append("date", this.date);
-      formData.append("time", this.time);
-      console.log(formData);
+      formData.append("owner", this.form.owner);
+      formData.append("invitee", this.form.invitee);
+      formData.append("subject", this.form.subject);
+      formData.append("description", this.form.description);
+      formData.append("date", this.form.date);
+      formData.append("start_time", this.form.start_time);
+      axios.post('./api/v1/meeting/create', formData, config).then(function (response) {// console.log(event.target.value);
+      })["catch"](function (error) {
+        var arr = error.response.data.errors;
+
+        for (i = 0; i <= arr.length; i++) {
+          _this.feedback.push(arr[i]);
+        }
+
+        console.log(_this.feedback);
+      });
+    }
+  },
+  watch: {
+    time: function time(val) {
+      var f = this.form; //var equel form object
+
+      f.start_time = val.slice(0, 8); // delete am or pm
     }
   }
 });
@@ -37457,7 +37495,7 @@ var render = function() {
               id: user.id,
               name: user.first_name,
               email: user.email,
-              type: user.type
+              type: user.user_type
             }
           })
         }),
@@ -37470,6 +37508,7 @@ var render = function() {
           attrs: {
             id: value.id,
             name: value.first_name,
+            inviteeId: _vm.invitee.id,
             inviteeName: _vm.invitee.first_name
           }
         })
@@ -37581,23 +37620,24 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.subject,
-                          expression: "subject"
+                          value: _vm.form.subject,
+                          expression: "form.subject"
                         }
                       ],
                       staticClass: "form-control",
                       attrs: {
                         type: "text",
                         placeholder: "subject",
-                        id: "inputSubject"
+                        id: "inputSubject",
+                        required: ""
                       },
-                      domProps: { value: _vm.subject },
+                      domProps: { value: _vm.form.subject },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.subject = $event.target.value
+                          _vm.$set(_vm.form, "subject", $event.target.value)
                         }
                       }
                     })
@@ -37620,8 +37660,8 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.description,
-                          expression: "description"
+                          value: _vm.form.description,
+                          expression: "form.description"
                         }
                       ],
                       staticClass: "form-control",
@@ -37629,15 +37669,16 @@ var render = function() {
                         type: "text",
                         placeholder: "description",
                         rows: "3",
-                        id: "inputDescription"
+                        id: "inputDescription",
+                        required: ""
                       },
-                      domProps: { value: _vm.description },
+                      domProps: { value: _vm.form.description },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.description = $event.target.value
+                          _vm.$set(_vm.form, "description", $event.target.value)
                         }
                       }
                     })
@@ -37661,11 +37702,11 @@ var render = function() {
                       _c("date-picker", {
                         attrs: { lang: "en", valueType: "format" },
                         model: {
-                          value: _vm.date,
+                          value: _vm.form.date,
                           callback: function($$v) {
-                            _vm.date = $$v
+                            _vm.$set(_vm.form, "date", $$v)
                           },
-                          expression: "date"
+                          expression: "form.date"
                         }
                       })
                     ],
@@ -37691,7 +37732,8 @@ var render = function() {
                         attrs: {
                           lang: "en",
                           type: "time",
-                          format: "HH:mm a",
+                          "value-type": "format",
+                          format: "HH:mm:ss",
                           "time-picker-options": _vm.timePickerOptions,
                           placeholder: "Select Time"
                         },
@@ -50288,8 +50330,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\meeting-event\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\meeting-event\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\meeting_event\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\meeting_event\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

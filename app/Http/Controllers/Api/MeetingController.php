@@ -24,15 +24,13 @@ class MeetingController extends Controller
     {
         //validation request
         $this->validate($request, [
-            'owner' => 'required',
-            'invitee' => 'required',
-            'subject' => 'required',
-            'description' =>'required',
-            'date' => 'required',
-            'start_time' => 'required',
-            'finish_time' => 'required'
+            'owner' => 'required|numeric',
+            'invitee' => 'required|numeric',
+            'subject' => 'required|max:20',
+            'description' =>'required|min:10',
+            'date' => 'required|date_format:Y-m-d',
+            'start_time' => 'required|date_format:H:i:s',
         ]);
-        return 'done';
 
         // prams equal request
         $owner = $request->input('owner');
@@ -41,14 +39,19 @@ class MeetingController extends Controller
         $description = $request->input('description');
         $date = $request->input('date');
         $start = $request->input('start_time');
-        $finish = $request->input('finish_time');
+
+        //add 30 mins to Strat time meeting
+        // format: H:i:ss , time , 1800s = 1800/60 = 30mins //
+        // Duration Meeting = 1800s = 30Mins
+        $newtime = strtotime($start);
+        $finish = date("H:i:ss", $newtime  + 1800);
 
         $meeting = new Meeting([
             'owner' => $owner,
             'invitee' => $invitee,
             'subject' => $subject,
             'description' => $description,
-            'data' => $date,
+            'date_meeting' => $date,
             'start_time' => $start,
             'finish_time' => $finish
         ]);

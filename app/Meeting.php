@@ -8,6 +8,6 @@ class Meeting extends Model
 {
     protected $fillable = [
             'owner', 'invitee', 'subject',
-            'description', 'date', 'start_time', 'finish_time'
+            'description', 'date_meeting', 'start_time', 'finish_time'
     ];
 }

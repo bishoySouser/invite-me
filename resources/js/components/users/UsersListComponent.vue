@@ -1,21 +1,32 @@
 <template>
     <div id="user-list">
         <div  class="row justify-content-center text-center">
+            <!-- **meeting:owner** -->
+                <!--|   id    |
+                    |  name   |
+                    |  email  |
+                    |user_type| -->
             <UserCard 
                 v-for="user in users"
                 :key="user.id"
                 :id="user.id"
                 :name="user.first_name"
                 :email="user.email"
-                :type="user.type"
+                :type="user.user_type"
              />
         </div>
-        
+            <!-- **meeting:owner** -->
+                <!--|   id    |
+                    |  name   |-->
+                <!-- **invitee** -->
+                <!--| inviteeId |
+                    |inviteeName|-->
         <MeetingModel 
             v-for="value in users"
             :key="value.id"
             :id="value.id"
             :name="value.first_name"
+            :inviteeId="invitee.id"
             :inviteeName="invitee.first_name"
         />
     </div>
@@ -36,11 +47,11 @@ export default {
         users: []
     }),
     created(){
-            const baseUrl = 'http://localhost:8000/api/v1/';
+            const baseUrl = 'http://localhost:9000/api/v1/';
             axios.get(baseUrl +'user/list/'+ this.invitee.id)
              .then((res) => {
                 this.users = res.data.users;
-                console.log(this.users);
+                // console.log(this.users);
             })
                 .catch(({ response }) => {
                 this.errors = response.data.errors;

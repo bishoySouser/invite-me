@@ -19,9 +19,9 @@ class CreateMeetingsTable extends Migration
             $table->bigInteger('invitee');
             $table->string('subject');
             $table->text('description');
-            $table->date('date');
+            $table->date('date_meeting');
             $table->time('start_time');
-            $table->time('finish_time');
+            $table->time('finish_time')->nullable();
             $table->timestamps();
         });
     }
