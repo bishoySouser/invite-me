@@ -20,4 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('v1/user/list/{id}','Api\UserController@userList');
 
 //meeting
-Route::post('v1/meeting/create','Api\MeetingController@createMeeting');
+Route::post('v1/meeting','Api\MeetingController@createMeeting');

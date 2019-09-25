@@ -19,25 +19,44 @@
                         <div class="form-group row">
                             <label for="inputSubject" class="col-sm-2 col-form-label">Subject</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" v-model="form.subject" placeholder="subject" id="inputSubject" required>
+                                <input 
+                                    type="text" name="subject"
+                                    class="form-control" :class="{ 'is-invalid': form.errors.has('subject') }" 
+                                    v-model="form.subject" placeholder="subject" id="inputSubject">
+                                <has-error :form="form" field="subject"></has-error>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputDescription" class="col-sm-2 col-form-label">Description</label>
                             <div class="col-sm-10">
-                                <textarea type="text" class="form-control" v-model="form.description" placeholder="description" rows="3" id="inputDescription" required></textarea>
+                                <textarea type="text" name="description"
+                                    class="form-control" :class="{ 'is-invalid': form.errors.has('description') }" 
+                                    v-model="form.description" placeholder="description" rows="3" id="inputDescription"></textarea>
+                                <has-error :form="form" field="description"></has-error>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputDate" class="col-sm-2 col-form-label">Date</label>
                             <div class="col-sm-10">
-                                <date-picker lang="en" v-model="form.date" valueType="format"></date-picker>
+                                <date-picker lang="en" input-name='date'
+                                class="form-control"
+                                :class="{ 'is-invalid': form.errors.has('date') }"
+                                v-model="form.date" valueType="format" :disabled-days="disabledDates">
+                                </date-picker>
+                                
+                                <has-error :form="form" field="date"></has-error>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputTime" class="col-sm-2 col-form-label">Time</label>
                             <div class="col-sm-10">
-                                 <date-picker lang="en" type="time" v-model="time" value-type="format" format="HH:mm:ss" :time-picker-options="timePickerOptions" placeholder="Select Time"></date-picker>
+                                 <date-picker lang="en" input-name='start_time' 
+                                 class="form-control"
+                                :class="{ 'is-invalid': form.errors.has('start_time') }"
+                                 type="time" v-model="time" value-type="format" format="HH:mm:ss" 
+                                 :time-picker-options="timePickerOptions" placeholder="Select Time">
+                                 </date-picker>
+                                 <has-error :form="form" field="start_time"></has-error>
                             </div>
                         </div>
                     <button type="submit" class="btn btn-primary float-right">Save changes</button>
@@ -62,15 +81,16 @@ export default {
         return{
             invitee: this.inviteeName,
             time:"",
-            feedback:[],
-            form: {
+            
+            disabledDates: ['2019'],
+            form: new Form({
                 owner:this.id,
                 invitee:this.inviteeId,
                 subject:"",
                 description:"",
                 date:"",
                 start_time:""
-            },
+            }),
             timePickerOptions:{
                 start: '9:00',
                 step: '00:30',
@@ -79,30 +99,22 @@ export default {
         }
     },
     methods:{
-        onSubmit: function(){
-            const config = { headers: { "Content-Type": "multipart/form-data" } };
-            const formData = new FormData();
-            formData.append("owner", this.form.owner);
-            formData.append("invitee", this.form.invitee);
-            formData.append("subject", this.form.subject);
-            formData.append("description", this.form.description);
-            formData.append("date", this.form.date);
-            formData.append("start_time", this.form.start_time);   
-        
-            axios
-            .post('./api/v1/meeting/create', formData,config)
-            .then( function(response){
-                
-            // console.log(event.target.value);
-            })
-            .catch(error => {
-                const arr = error.response.data.errors;
-                for(i=0; i <= arr.length ; i++){
-                    this.feedback.push(arr[i]);
-                }
-                
-                console.log(this.feedback);
-            });
+
+        onSubmit(){  
+              this.$Progress.start();
+                this.form.post('api/v1/meeting')
+                .then((response)=>{
+                    // console.log(response.data.msg);
+                    this.form.reset();
+                    this.time = "";
+                    $('#model'+this.id).modal('hide')
+                   toast.fire({
+                        type: 'success',
+                        title: response.data.msg
+                        })
+                })
+                this.$Progress.finish();
+                    
             }
         },
     watch:{
@@ -114,5 +126,11 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+form > div:nth-child(4) > div > div{
+    padding: 0px !important;
+}
+form > div:nth-child(5) > div > div{
+    padding: 0px !important;
+}
 
 </style>

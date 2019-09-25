@@ -29,6 +29,7 @@
             :inviteeId="invitee.id"
             :inviteeName="invitee.first_name"
         />
+        <vue-progress-bar></vue-progress-bar>
     </div>
 </template>
 <script>
@@ -47,8 +48,7 @@ export default {
         users: []
     }),
     created(){
-            const baseUrl = 'http://localhost:9000/api/v1/';
-            axios.get(baseUrl +'user/list/'+ this.invitee.id)
+            axios.get('./api/v1/user/list/'+ this.invitee.id)
              .then((res) => {
                 this.users = res.data.users;
                 // console.log(this.users);
