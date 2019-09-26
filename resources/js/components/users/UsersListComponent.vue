@@ -29,12 +29,14 @@
             :inviteeId="invitee.id"
             :inviteeName="invitee.first_name"
         />
+        <ModelMessage />
         <vue-progress-bar></vue-progress-bar>
     </div>
 </template>
 <script>
 import UserCard from "./UserCardComponent";
 import MeetingModel from "../models/ModelMeetingComponent";
+import ModelMessage from "../models/ModelMessageComponent";
 export default {
     name:'UserList',
     props:[
@@ -42,7 +44,8 @@ export default {
     ],
     components: {
         UserCard,
-        MeetingModel
+        MeetingModel,
+        ModelMessage
     },
     data: () => ({
         users: []

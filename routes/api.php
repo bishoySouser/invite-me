@@ -19,5 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //users
 Route::get('v1/user/list/{id}','Api\UserController@userList');
 
-//meeting
+//meetings
 Route::post('v1/meeting','Api\MeetingController@createMeeting');
+
+//messages
+Route::post('v1/message','Api\MessageController@store');

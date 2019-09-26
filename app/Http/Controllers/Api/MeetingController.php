@@ -28,8 +28,11 @@ class MeetingController extends Controller
             'invitee' => 'required|numeric',
             'subject' => 'required|max:20',
             'description' =>'required|min:10',
-            'date' => 'required|date_format:Y-m-d',
+            'date' => 'required|date_format:Y-m-d|after:'.date("Y-m-d"),
             'start_time' => 'required|date_format:H:i:s',
+        ],
+        [
+            'date.after' => 'The date must be a date after today.'
         ]);
 
         // prams equal request
