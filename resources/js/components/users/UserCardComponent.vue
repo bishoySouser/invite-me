@@ -6,7 +6,7 @@
             <h5 class="card-title">{{name}}</h5>
             <p class="card-text">{{email}}</p>
             <a class="btn btn-primary" data-toggle="modal" :data-target="'#model'+id">Meeting</a>
-            <a class="btn btn-primary" data-toggle="modal" data-target="#modelMs">Message</a>
+            <a class="btn btn-primary" data-toggle="modal" :data-target="'#modelMs'+id">Message</a>
         </div>
         </div>
         

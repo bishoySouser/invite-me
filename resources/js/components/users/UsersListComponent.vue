@@ -29,7 +29,18 @@
             :inviteeId="invitee.id"
             :inviteeName="invitee.first_name"
         />
-        <ModelMessage />
+                <!-- **receiver** -->
+                <!--|   id    |
+                    |  receiver   |-->
+                <!-- **sender** -->
+                <!--| id |
+                    |sender |-->
+        <ModelMessage 
+        v-for="receiver in users"
+        :key="receiver.num"
+        :id="receiver.id"
+        :receiver="receiver.first_name"
+        :senderId="invitee.id" />
         <vue-progress-bar></vue-progress-bar>
     </div>
 </template>

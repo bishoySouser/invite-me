@@ -24,3 +24,5 @@ Route::post('v1/meeting','Api\MeetingController@createMeeting');
 
 //messages
 Route::post('v1/message','Api\MessageController@store');
+
+Route::get('v1/message/one={one}/two={two}','Api\MessageController@showChat'); 

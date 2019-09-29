@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Auth;
 use App\Message;
 
 class MessageController extends Controller
@@ -54,6 +54,30 @@ class MessageController extends Controller
             $msg = 'message is send.';
             return response()->json($msg, 400);
             
+    }
+
+    // $chat = Message::where('receiver_id', $one)
+    //                     ->orwhere('sender_id', $one)
+    //                     ->where('receiver_id', $two)
+    //                     ->orwhere('sender_id', $two)
+    //                     ->orderBy('created_at','desc')
+    //                     ->get();
+
+    public function showChat($one, $two){
+        $chat = Message::where(function($q) use($one, $two) {
+                    $q->where('receiver_id', $one)
+                    ->orwhere('sender_id', $one);
+                })->where(function ($q)use($one, $two) {
+                    $q->where('receiver_id', $two)
+                    ->orwhere('sender_id', $two);
+                })
+                        ->orderBy('created_at','asc')
+                        ->get();
+        $response = [
+            'msg' => 'chat history',
+            'history' => $chat
+        ];
+        return response()->json($response, 200);
     }
 
     /**
