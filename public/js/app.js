@@ -2167,7 +2167,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ModelMessage',
   props: ['id', 'receiver', 'senderId'],
@@ -2179,7 +2178,8 @@ __webpack_require__.r(__webpack_exports__);
         sender: this.senderId,
         receiver: this.id,
         content: ''
-      })
+      }),
+      message: []
     };
   },
   computed: {
@@ -2189,10 +2189,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    scrollToEnd: function scrollToEnd() {
-      var container = document.querySelector(".modal-body");
-      var scrollHeight = container.scrollHeight;
-      container.scrollTop = scrollHeight;
+    scrollToBottom: function scrollToBottom() {
+      var chat = document.getElementById("msg-page");
+      chat.scrollTo(0, chat.scrollHeight + 30);
     },
     modelHeight: function modelHeight() {
       var height = window.innerHeight;
@@ -2203,6 +2202,9 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('api/v1/message/one=' + this.form.receiver + '/two=' + this.form.sender).then(function (response) {
         _this.history = response.data.history;
+
+        _this.scrollToBottom();
+
         console.log(response.data.history);
       });
     },
@@ -2218,7 +2220,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.modelHeight();
-    window.addEventListener('scroll', this.handleScroll);
+    this.gethistory();
+  },
+  mounted: function mounted() {
+    var _this3 = this;
+
+    axios.get('api/v1/message/one=' + this.form.receiver + '/two=' + this.form.sender).then(function (response) {
+      _this3.history = response.data.history;
+      console.log('done');
+    });
   }
 });
 
@@ -42140,6 +42150,82 @@ AlertSuccess_component.options.__file = "AlertSuccess.vue"
 
 /***/ }),
 
+/***/ "./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function (global, factory) {
+	 true ? module.exports = factory() :
+	undefined;
+}(this, (function () { 'use strict';
+
+/**
+* @name VueJS vChatScroll (vue-chat-scroll)
+* @description Monitors an element and scrolls to the bottom if a new child is added
+* @author Theodore Messinezis <theo@theomessin.com>
+* @file v-chat-scroll  directive definition
+*/
+
+var scrollToBottom = function scrollToBottom(el, smooth) {
+  if (typeof el.scroll === "function") {
+    el.scroll({
+      top: el.scrollHeight,
+      behavior: smooth ? 'smooth' : 'instant'
+    });
+  } else {
+    el.scrollTop = el.scrollHeight;
+  }
+};
+
+var vChatScroll = {
+  bind: function bind(el, binding) {
+    var scrolled = false;
+
+    el.addEventListener('scroll', function (e) {
+      scrolled = el.scrollTop + el.clientHeight + 1 < el.scrollHeight;
+    });
+
+    new MutationObserver(function (e) {
+      var config = binding.value || {};
+      var pause = config.always === false && scrolled;
+      if (config.scrollonremoved) {
+        if (pause || e[e.length - 1].addedNodes.length != 1 && e[e.length - 1].removedNodes.length != 1) return;
+      } else {
+        if (pause || e[e.length - 1].addedNodes.length != 1) return;
+      }
+      scrollToBottom(el, config.smooth);
+    }).observe(el, { childList: true, subtree: true });
+  },
+  inserted: scrollToBottom
+};
+
+/**
+* @name VueJS vChatScroll (vue-chat-scroll)
+* @description Monitors an element and scrolls to the bottom if a new child is added
+* @author Theodore Messinezis <theo@theomessin.com>
+* @file vue-chat-scroll plugin definition
+*/
+
+var VueChatScroll = {
+  install: function install(Vue, options) {
+    Vue.directive('chat-scroll', vChatScroll);
+  }
+};
+
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(VueChatScroll);
+}
+
+return VueChatScroll;
+
+})));
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
 /*!*******************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
@@ -42683,47 +42769,52 @@ var render = function() {
           _c(
             "div",
             {
-              staticClass: "modal-body overflow-auto",
-              style: { height: _vm.bodyH + "px" },
-              attrs: { id: "massage-body" }
+              directives: [
+                {
+                  name: "chat-scroll",
+                  rawName: "v-chat-scroll",
+                  value: { always: true, smooth: false, scrollonremoved: true },
+                  expression:
+                    "{always: true, smooth: false, scrollonremoved:true}"
+                }
+              ],
+              staticClass: "modal-body",
+              style: { height: _vm.bodyH + "px", "overflow-y": "scroll" },
+              attrs: { id: "msg-page" }
             },
-            [
-              _vm._l(_vm.history, function(message) {
-                return _c("div", { key: message.num }, [
-                  message.receiver_id != _vm.id
-                    ? _c("div", { staticClass: "row justify-content-start" }, [
-                        _c("div", { staticClass: "col-auto" }, [
-                          _c(
-                            "p",
-                            {
-                              staticClass: "bg-info text-white mr-5 p-2 rounded"
-                            },
-                            [_vm._v(" " + _vm._s(message.content))]
-                          )
-                        ])
+            _vm._l(_vm.history, function(message) {
+              return _c("div", { key: message.num }, [
+                message.receiver_id != _vm.id
+                  ? _c("div", { staticClass: "row justify-content-start" }, [
+                      _c("div", { staticClass: "col-auto" }, [
+                        _c(
+                          "p",
+                          {
+                            staticClass: "bg-info text-white mr-5 p-2 rounded"
+                          },
+                          [_vm._v(" " + _vm._s(message.content))]
+                        )
                       ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  message.receiver_id == _vm.id
-                    ? _c("div", { staticClass: "row justify-content-end" }, [
-                        _c("div", { staticClass: "col-auto" }, [
-                          _c(
-                            "p",
-                            {
-                              staticClass:
-                                "bg-secondary text-white ml-5 p-2 rounded"
-                            },
-                            [_vm._v(_vm._s(message.content))]
-                          )
-                        ])
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                message.receiver_id == _vm.id
+                  ? _c("div", { staticClass: "row justify-content-end" }, [
+                      _c("div", { staticClass: "col-auto" }, [
+                        _c(
+                          "p",
+                          {
+                            staticClass:
+                              "bg-secondary text-white ml-5 p-2 rounded"
+                          },
+                          [_vm._v(_vm._s(message.content))]
+                        )
                       ])
-                    : _vm._e()
-                ])
-              }),
-              _vm._v(" "),
-              _c("div", { attrs: { id: "end" } })
-            ],
-            2
+                    ])
+                  : _vm._e()
+              ])
+            }),
+            0
           ),
           _vm._v(" "),
           _c("div", { staticClass: "modal-footer" }, [
@@ -54986,8 +55077,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vform__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var vue_progressbar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-progressbar */ "./node_modules/vue-progressbar/dist/vue-progressbar.js");
-/* harmony import */ var vue_progressbar__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_progressbar__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vue_chat_scroll__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-chat-scroll */ "./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js");
+/* harmony import */ var vue_chat_scroll__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_chat_scroll__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vue_progressbar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-progressbar */ "./node_modules/vue-progressbar/dist/vue-progressbar.js");
+/* harmony import */ var vue_progressbar__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vue_progressbar__WEBPACK_IMPORTED_MODULE_4__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -55007,13 +55100,15 @@ var toast = sweetalert2__WEBPACK_IMPORTED_MODULE_2___default.a.mixin({
   timer: 3000
 });
 window.toast = toast;
+
+Vue.use(vue_chat_scroll__WEBPACK_IMPORTED_MODULE_3___default.a);
 window.Form = vform__WEBPACK_IMPORTED_MODULE_1__["Form"];
 Vue.component(vform__WEBPACK_IMPORTED_MODULE_1__["HasError"].name, vform__WEBPACK_IMPORTED_MODULE_1__["HasError"]);
 Vue.component(vform__WEBPACK_IMPORTED_MODULE_1__["AlertError"].name, vform__WEBPACK_IMPORTED_MODULE_1__["AlertError"]);
 Vue.component(vform__WEBPACK_IMPORTED_MODULE_1__["AlertErrors"].name, vform__WEBPACK_IMPORTED_MODULE_1__["AlertErrors"]);
 Vue.component(vform__WEBPACK_IMPORTED_MODULE_1__["AlertSuccess"].name, vform__WEBPACK_IMPORTED_MODULE_1__["AlertSuccess"]);
 
-Vue.use(vue_progressbar__WEBPACK_IMPORTED_MODULE_3___default.a, {
+Vue.use(vue_progressbar__WEBPACK_IMPORTED_MODULE_4___default.a, {
   color: 'rgb(143, 255, 199)',
   failedColor: 'red',
   height: '2px'

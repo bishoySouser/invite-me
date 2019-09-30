@@ -21,6 +21,9 @@ const toast = swal.mixin({
 
 window.toast = toast;
 
+import VueChatScroll from 'vue-chat-scroll'
+Vue.use(VueChatScroll)
+
 window.Form = Form;
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)

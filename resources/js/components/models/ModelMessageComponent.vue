@@ -8,7 +8,7 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div id="massage-body" :style="{height: bodyH+'px'}" class="modal-body overflow-auto">
+                <div id="msg-page" :style="{height: bodyH+'px','overflow-y': 'scroll'}" class="modal-body" v-chat-scroll="{always: true, smooth: false, scrollonremoved:true}">
                     <div v-for="message in history"
                             :key="message.num"
                     >
@@ -25,7 +25,6 @@
                             </div>
                         </div>
                     </div>
-                    <div id="end"></div>
                 </div>
                 <div class="modal-footer">
                     <form action="" @submit.prevent="sendMessgae">
@@ -57,7 +56,8 @@ export default {
                 sender:this.senderId,
                 receiver:this.id,
                 content:''
-            })
+            }),
+            message:[]
         }
     },
     computed:{
@@ -67,11 +67,11 @@ export default {
         }
     },
     methods: {
-        scrollToEnd() {
-				var container = document.querySelector(".modal-body");
-				var scrollHeight = container.scrollHeight;
-				container.scrollTop = scrollHeight;
-		},
+        scrollToBottom() {
+            const chat = document.getElementById("msg-page");
+            chat.scrollTo(0, chat.scrollHeight + 30);
+            
+        },
         modelHeight(){
             const height = window.innerHeight;
             this.bodyH =  height-(height/2);
@@ -79,8 +79,9 @@ export default {
         gethistory(){
             axios.get('api/v1/message/one=' + this.form.receiver +'/two=' + this.form.sender)
                             .then(response => {
-
+                                
                                 this.history = response.data.history;
+                                this.scrollToBottom();
                                 console.log(response.data.history);
                             });
         },
@@ -95,9 +96,19 @@ export default {
         }
     },
     created(){
-        this.modelHeight();
-        window.addEventListener('scroll', this.handleScroll);
-        
+        this.modelHeight()
+        this.gethistory();
+    },
+    mounted(){
+       
+            axios.get('api/v1/message/one=' + this.form.receiver +'/two=' + this.form.sender)
+                            .then(response => {
+                                
+                                this.history = response.data.history;
+                                
+                                console.log('done');
+                            });
+       
     }
 }
 </script>
