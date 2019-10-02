@@ -102,7 +102,7 @@ export default {
 
         onSubmit(){  
               this.$Progress.start();
-                this.form.post('api/v1/meeting')
+                this.form.post('/v1/meeting')
                 .then((response)=>{
                     // console.log(response.data.msg);
                     this.form.reset();

@@ -62,7 +62,7 @@ export default {
         users: []
     }),
     created(){
-            axios.get('./api/v1/user/list/'+ this.invitee.id)
+            axios.get('/v1/user/list/'+ this.invitee.id)
              .then((res) => {
                 this.users = res.data.users;
                 // console.log(this.users);

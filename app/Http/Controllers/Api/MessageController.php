@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
 use App\Message;
+use App\Events\MessagePosted;
 
 class MessageController extends Controller
 {
@@ -43,11 +44,15 @@ class MessageController extends Controller
                 'content' => $request->input('content')
             ]);
 
+            
+
             if($message->save()){
                 $msg = [
                     'msg' => 'Message is send',
                     'message' => $message
                 ];
+                //Announce that a new message has been posted
+                event(new MessagePosted($message));
                 return response()->json($msg, 201);
             }
             

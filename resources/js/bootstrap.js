@@ -29,13 +29,35 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * allows your team to easily build robust real-time web applications.
  */
 
-// import Echo from 'laravel-echo';
+    window.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+    window.axios.defaults.headers.common.crossDomain = true;
+    window.axios.defaults.baseURL = '/api';
 
-// window.Pusher = require('pusher-js');
+    let token = document.head.querySelector('meta[name="csrf-token"]');
 
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     encrypted: true
-// });
+    if (token) {
+        window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    } else {
+        console.error('CSRF token not found: https://adonisjs.com/docs/4.1/csrf');
+    }
+
+import Echo from 'laravel-echo';
+
+window.Pusher = require('pusher-js');
+
+
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: '210565de8ce0e63eca5d',
+  cluster: 'eu',
+  forceTLS: true,
+  authEndpoint: '/broadcasting/auth',
+  auth: {
+    headers: {
+      'X-CSRF-TOKEN': token.content,
+    },
+  }
+});
+
+
+

@@ -52,12 +52,13 @@ export default {
         return {
             bodyH: '',
             history: [],
+            messages:'',
             form: new Form({
                 sender:this.senderId,
                 receiver:this.id,
                 content:''
             }),
-            message:[]
+            
         }
     },
     computed:{
@@ -77,16 +78,16 @@ export default {
             this.bodyH =  height-(height/2);
         },
         gethistory(){
-            axios.get('api/v1/message/one=' + this.form.receiver +'/two=' + this.form.sender)
+            axios.get('/v1/message/one=' + this.form.receiver +'/two=' + this.form.sender)
                             .then(response => {
                                 
                                 this.history = response.data.history;
                                 this.scrollToBottom();
-                                console.log(response.data.history);
+                                // console.log(response.data.history);
                             });
         },
         sendMessgae(){
-            this.form.post('api/v1/message')
+            this.form.post('/v1/message')
                 .then((response)=>{
                     
                     this.gethistory();
@@ -97,18 +98,18 @@ export default {
     },
     created(){
         this.modelHeight()
-        this.gethistory();
-    },
-    mounted(){
-       
-            axios.get('api/v1/message/one=' + this.form.receiver +'/two=' + this.form.sender)
-                            .then(response => {
-                                
-                                this.history = response.data.history;
-                                
-                                console.log('done');
-                            });
-       
+        axios.get('/v1/message/one=' + this.form.receiver +'/two=' + this.form.sender)
+        .then(response => {
+            this.history = response.data.history;
+        });
+        Echo.join('chatroom')
+                // .here()
+                // .joining()
+                // .leaving()
+                .listen('MessagePosted', (e) => {
+                    this.history.push(e.message)
+                    console.log(this.history)
+                })
     }
 }
 </script>

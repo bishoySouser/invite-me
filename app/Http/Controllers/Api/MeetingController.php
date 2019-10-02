@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Meeting;
 
+
 class MeetingController extends Controller
 {
     private function validateMeeting($request)
@@ -63,6 +64,7 @@ class MeetingController extends Controller
                 'msg' => 'Meeting created. waiting confirm.',
                 'meeting' => $meeting
             ];
+            
             return response()->json($message, 201);
         }
         return response()->json($response, 404);
