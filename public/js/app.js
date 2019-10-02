@@ -2228,9 +2228,14 @@ __webpack_require__.r(__webpack_exports__);
     // .joining()
     // .leaving()
     .listen('MessagePosted', function (e) {
-      _this3.history.push(e.message);
-
-      console.log(_this3.history);
+      // if(e.message.receiver_id === this.id){
+      //     this.history = e.message
+      // }
+      if (e.message.receiver_id == _this3.id && e.message.sender_id == _this3.senderId) {
+        _this3.history.push(e.message);
+      } else if (e.message.receiver_id == _this3.senderId && e.message.sender_id == _this3.id) {
+        _this3.history.push(e.message);
+      }
     });
   }
 });

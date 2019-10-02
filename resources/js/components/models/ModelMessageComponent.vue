@@ -107,8 +107,16 @@ export default {
                 // .joining()
                 // .leaving()
                 .listen('MessagePosted', (e) => {
-                    this.history.push(e.message)
-                    console.log(this.history)
+                    // if(e.message.receiver_id === this.id){
+                    //     this.history = e.message
+                    // }
+                        
+                    if(e.message.receiver_id == this.id && e.message.sender_id == this.senderId ){
+                        this.history.push(e.message)
+                        
+                    }else if(e.message.receiver_id == this.senderId && e.message.sender_id == this.id){
+                        this.history.push(e.message)
+                    }
                 })
     }
 }
