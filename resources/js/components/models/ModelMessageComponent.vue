@@ -8,7 +8,7 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div id="msg-page" :style="{height: bodyH+'px','overflow-y': 'scroll'}" class="modal-body" v-chat-scroll="{always: true, smooth: false, scrollonremoved:true}">
+                <div id="demo" :style="{height: bodyH+'px','overflow-y': 'scroll'}" class="modal-body demo" v-chat-scroll="{always: true, smooth: false, scrollonremoved:true}">
                     <div v-for="message in history"
                             :key="message.num"
                     >
@@ -68,22 +68,31 @@ export default {
         }
     },
     methods: {
+
         scrollToBottom() {
-            const chat = document.getElementById("msg-page");
-            chat.scrollTo(0, chat.scrollHeight + 30);
+            setTimeout(function(){ console.log(document.getElementsByClassName('demo')) }, 3000);
+           
+            $('#myModal').on('show.bs.modal', function (e) {
+                console.log('show')
+            })
+            
             
         },
         modelHeight(){
             const height = window.innerHeight;
             this.bodyH =  height-(height/2);
+            
         },
         gethistory(){
             axios.get('/v1/message/one=' + this.form.receiver +'/two=' + this.form.sender)
                             .then(response => {
                                 
                                 this.history = response.data.history;
-                                this.scrollToBottom();
+                                
                                 // console.log(response.data.history);
+                            })
+                            .then(response => {
+                               
                             });
         },
         sendMessgae(){
@@ -98,19 +107,14 @@ export default {
     },
     created(){
         this.modelHeight()
-        axios.get('/v1/message/one=' + this.form.receiver +'/two=' + this.form.sender)
-        .then(response => {
-            this.history = response.data.history;
-        });
+        this.gethistory()
+        
         Echo.join('chatroom')
                 // .here()
                 // .joining()
                 // .leaving()
                 .listen('MessagePosted', (e) => {
-                    // if(e.message.receiver_id === this.id){
-                    //     this.history = e.message
-                    // }
-                        
+                    // split data history in components  for push new message
                     if(e.message.receiver_id == this.id && e.message.sender_id == this.senderId ){
                         this.history.push(e.message)
                         

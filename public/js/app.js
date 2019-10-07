@@ -2190,8 +2190,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     scrollToBottom: function scrollToBottom() {
-      var chat = document.getElementById("msg-page");
-      chat.scrollTo(0, chat.scrollHeight + 30);
+      setTimeout(function () {
+        console.log(document.getElementsByClassName('demo'));
+      }, 3000);
+      $('#myModal').on('show.bs.modal', function (e) {
+        console.log('show');
+      });
     },
     modelHeight: function modelHeight() {
       var height = window.innerHeight;
@@ -2201,11 +2205,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('/v1/message/one=' + this.form.receiver + '/two=' + this.form.sender).then(function (response) {
-        _this.history = response.data.history;
-
-        _this.scrollToBottom(); // console.log(response.data.history);
-
-      });
+        _this.history = response.data.history; // console.log(response.data.history);
+      }).then(function (response) {});
     },
     sendMessgae: function sendMessgae() {
       var _this2 = this;
@@ -2221,16 +2222,12 @@ __webpack_require__.r(__webpack_exports__);
     var _this3 = this;
 
     this.modelHeight();
-    axios.get('/v1/message/one=' + this.form.receiver + '/two=' + this.form.sender).then(function (response) {
-      _this3.history = response.data.history;
-    });
+    this.gethistory();
     Echo.join('chatroom') // .here()
     // .joining()
     // .leaving()
     .listen('MessagePosted', function (e) {
-      // if(e.message.receiver_id === this.id){
-      //     this.history = e.message
-      // }
+      // split data history in components  for push new message
       if (e.message.receiver_id == _this3.id && e.message.sender_id == _this3.senderId) {
         _this3.history.push(e.message);
       } else if (e.message.receiver_id == _this3.senderId && e.message.sender_id == _this3.id) {
@@ -52622,9 +52619,9 @@ var render = function() {
                     "{always: true, smooth: false, scrollonremoved:true}"
                 }
               ],
-              staticClass: "modal-body",
+              staticClass: "modal-body demo",
               style: { height: _vm.bodyH + "px", "overflow-y": "scroll" },
-              attrs: { id: "msg-page" }
+              attrs: { id: "demo" }
             },
             _vm._l(_vm.history, function(message) {
               return _c("div", { key: message.num }, [
