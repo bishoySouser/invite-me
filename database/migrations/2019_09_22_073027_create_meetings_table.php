@@ -15,14 +15,23 @@ class CreateMeetingsTable extends Migration
     {
         Schema::create('meetings', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('owner');
-            $table->bigInteger('invitee');
+            $table->unsignedBigInteger('owner_id');
+            $table->unsignedBigInteger('invitee_id');
             $table->string('subject');
             $table->text('description');
             $table->date('date_meeting');
             $table->time('start_time');
             $table->time('finish_time')->nullable();
+            $table->enum('status', ['pending', 'change time', 'approved']);
             $table->timestamps();
+            // 'owner' field referenced the 'id' field of 'users' table:
+            $table->foreign('owner_id')
+                  ->references('id')
+                  ->on('users');
+            // 'invitee' field referenced the 'id' field of 'users' table:
+            $table->foreign('invitee_id')
+                ->references('id')
+                ->on('users');
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Meeting;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -36,4 +37,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    // A user can receive a meeting
+    public function owner()
+    {
+        return $this->hasMany(Meeting::class, 'owner_id');
+    }
+    // A user can create a meeting
+    public function invitee()
+    {
+        return $this->hasMany(Meeting::class, 'invitee_id');
+    }
 }

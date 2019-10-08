@@ -19,3 +19,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+// meeting
+Route::get('/meeting', function () {
+    return view('pages.meeting');
+})->name('meeting');
+
