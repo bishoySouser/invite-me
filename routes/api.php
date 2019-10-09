@@ -21,7 +21,7 @@ Route::get('v1/user/list/{id}','Api\UserController@userList');
 
 //meetings
 Route::post('v1/meeting','Api\MeetingController@createMeeting');
-Route::get('v1/meeting/{id}','Api\MeetingController@getMeetings'); //list meeting for one user (id)
+Route::get('v1/meeting/{id}','Api\MeetingController@receiveMeetings'); //list meeting for one user (id)
 
 //messages
 Route::post('v1/message','Api\MessageController@store');

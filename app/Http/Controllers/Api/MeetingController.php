@@ -47,10 +47,8 @@ class MeetingController extends Controller
 
         //status default => pending
         $status = 'pending';
-
+        //insert data in meeting without owner_id & invitee_id
         $meeting = new Meeting([
-            'owner_id' => $owner,
-            'invitee_id' => $invitee,
             'subject' => $subject,
             'description' => $description,
             'date_meeting' => $date,
@@ -58,6 +56,13 @@ class MeetingController extends Controller
             'finish_time' => $finish,
             'status' => $status
         ]);
+        //owner object & invitee object
+        $owner = User::find($owner);
+        $invitee = User::find($invitee);
+        //insert oowner object & invitee object
+        $meeting->owner()->associate($owner);
+        $meeting->invitee()->associate($invitee);
+        //insert done
         if($meeting->save()){
             $message = [
                 'msg' => 'Meeting created. waiting confirm.',
@@ -70,10 +75,10 @@ class MeetingController extends Controller
         return response()->json($response, 404);
     }
 
-    public function getMeetings($id){
+    public function receiveMeetings($id){
         // meeting list 
         // id => user-id who ower meeting 
-        $meetings = Meeting::where('owner_id' , $id)->get();
+        $meetings = Meeting::with('invitee')->where('owner_id', $id)->get();
         //response
         $response = [
             'msg' => 'Meetings list for user',

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Meeting extends Model
 {
     protected $fillable = [
-            'owner', 'invitee', 'subject',
+            'owner_id', 'invitee_id', 'subject',
             'description', 'date_meeting', 'start_time', 'finish_time'
     ];
     // A meeting belongs to a owner 
