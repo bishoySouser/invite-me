@@ -12,13 +12,13 @@
                     <div v-for="message in history"
                             :key="message.num"
                     >
-
+                        <!-- anther -->
                         <div v-if="message.receiver_id != id" class="row justify-content-start">
                             <div class="col-auto">
-                                <p class="bg-info text-white mr-5 p-2 rounded"> {{message.content}}</p>
+                                <span>{{receiver}}</span>:<p class="bg-info text-white mr-5 p-2 rounded">{{message.content}}</p>
                             </div>
                         </div>
-
+                        <!-- Mychat -->
                         <div v-if="message.receiver_id == id" class="row justify-content-end">
                             <div class="col-auto">
                                 <p class="bg-secondary text-white ml-5 p-2 rounded">{{message.content}}</p>

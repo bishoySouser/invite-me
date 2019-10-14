@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Notifications\MeetingCreate;
 use App\Meeting;
 use App\User;
+
+use App\Events\MeetingPosted;
+
+use App\Notifications\MeetingCreate;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 
 class MeetingController extends Controller
@@ -70,21 +74,67 @@ class MeetingController extends Controller
             ];
             // send notify when send meeting
             // User::find($invitee)->notify(new MeetingCreate);
+            event( new MeetingPosted($meeting) );
             return response()->json($message, 201);
         }
         return response()->json($response, 404);
     }
 
-    public function receiveMeetings($id){
-        // meeting list 
-        // id => user-id who ower meeting 
-        $meetings = Meeting::with('invitee')->where('owner_id', $id)->get();
-        //response
+    public function MeetingEditStatus(Request $request){
+        //valid request
+        $this->validate($request, [
+            'id' => 'required|numeric',
+            'invitee_id' => 'required|numeric',
+            'status' => 'required'
+        ]);
+        // valiable for request
+        $id = $request->input('id');
+        $invitee= $request->input('invitee_id');
+        $status = $request->status;
+        //find meeting
+        $meeting = Meeting::find($id);
+        $meeting->status = $status;
+        //update meeting
+        if (!$meeting->update()) {
+            return response()->json(['msg' => 'Error during meeting updating'], 404);
+        }
+        // send notify when send meeting
+        User::find($invitee)->notify(new MeetingCreate);
+        $response = [
+            'msg' => 'Meeting updated',
+            'meeting' => $meeting
+        ];
+
+        return response()->json($response, 200);
+
+    }
+    
+    public function receiveMeetings($id){ /* --Meetings panding-- */
+        // query: Meetings where user (id) & pending (Meetings status) and include info user (invitee)
+        $meetings = Meeting::with('invitee')
+                    ->where('owner_id', $id)
+                    ->where('status', 'pending')
+                    ->get();
+        
         $response = [
             'msg' => 'Meetings list for user',
             'list' => $meetings
         ];
 
+        return response()->json($response, 200);
+    }
+
+    public function deleteMeeting($id){ /* --delete one Meeting-- */
+        // query: a meeting has this ($id)
+        $meeting = Meeting::find($id);
+        if(!$meeting){
+            return response()->json(['msg' => 'meeting not exist.'], 404);
+        }
+
+        $meeting->delete();
+        $response = [
+            'msg' => 'The meeting deleted.'
+        ];
         return response()->json($response, 200);
     }
 }

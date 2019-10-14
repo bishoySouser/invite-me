@@ -20,10 +20,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('v1/user/list/{id}','Api\UserController@userList');
 
 //meetings
-Route::post('v1/meeting','Api\MeetingController@createMeeting');
-Route::get('v1/meeting/{id}','Api\MeetingController@receiveMeetings'); //list meeting for one user (id)
+Route::post('v1/meeting','Api\MeetingController@createMeeting'); //create New Meeting
+Route::get('v1/meeting/{id}','Api\MeetingController@receiveMeetings'); //Meetings list for one user (id)
+Route::delete('v1/meeting/{id}','Api\MeetingController@deleteMeeting'); //Delete meeting one (id)
+Route::put('v1/meeting','Api\MeetingController@MeetingEditStatus'); //Edit Meeting Status 
 
 //messages
 Route::post('v1/message','Api\MessageController@store');
-
-Route::get('v1/message/one={one}/two={two}','Api\MessageController@showChat'); 
+Route::get('v1/message/one={one}/two={two}','Api\MessageController@showChat');

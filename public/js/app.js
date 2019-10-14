@@ -2090,12 +2090,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'meetingList',
   props: ['owerid'],
   data: function data() {
     return {
-      list: []
+      list: [],
+      idItemDelete: '',
+      confirm: 'Confirm'
     };
   },
   methods: {
@@ -2105,10 +2112,41 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/v1/meeting/' + this.owerid).then(function (res) {
         _this.list = res.data.list;
       });
+    },
+    confirmMeeting: function confirmMeeting(value) {
+      value.status = 'approved';
+      axios.put('/v1/meeting', {
+        id: value.id,
+        invitee_id: value.invitee_id,
+        status: value.status
+      }).then(function (res) {
+        console.log(res);
+      });
+    },
+    deleteMessage: function deleteMessage(value, id) {
+      var _this2 = this;
+
+      this.idItemDelete = id;
+      console.log(value);
+      axios["delete"]('/v1/meeting/' + id).then(function (res) {
+        var index = _this2.list.indexOf(value);
+
+        _this2.list.splice(index, 1);
+      });
     }
   },
   created: function created() {
+    var _this3 = this;
+
     this.getMeetingList();
+    Echo.join('meetingcreate') // .here()
+    // .joining()
+    // .leaving()
+    .listen('MeetingPosted', function (e) {
+      console.log(e.meeting);
+
+      _this3.list.push(e.meeting);
+    });
   }
 });
 
@@ -8796,7 +8834,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".modal .modal-body span[data-v-7fbf26fb] {\n  font-weight: bold;\n  font-size: 20px;\n  color: #000;\n}\n.modal .modal-body p[data-v-7fbf26fb] {\n  color: #dd3011;\n}", ""]);
+exports.push([module.i, ".modal .modal-body span[data-v-7fbf26fb] {\n  font-weight: bold;\n  font-size: 20px;\n  color: #000;\n}\n.modal .modal-body p[data-v-7fbf26fb] {\n  color: #dd3011;\n}\n.fade-in[data-v-7fbf26fb] {\n  animation: fadeIn-data-v-7fbf26fb ease 2s;\n  -webkit-animation: fadeIn-data-v-7fbf26fb ease 2s;\n  -moz-animation: fadeIn-data-v-7fbf26fb ease 2s;\n  -o-animation: fadeIn-data-v-7fbf26fb ease 2s;\n  -ms-animation: fadeIn-data-v-7fbf26fb ease 2s;\n}\n@-webkit-keyframes fadeIn-data-v-7fbf26fb {\n0% {\n    opacity: 0;\n}\n100% {\n    opacity: 1;\n}\n}\n@keyframes fadeIn-data-v-7fbf26fb {\n0% {\n    opacity: 0;\n}\n100% {\n    opacity: 1;\n}\n}", ""]);
 
 // exports
 
@@ -52448,7 +52486,7 @@ var render = function() {
       _c(
         "tbody",
         _vm._l(_vm.list, function(value, index) {
-          return _c("tr", [
+          return _c("tr", { key: index, staticClass: "text-center" }, [
             _c("th", { attrs: { scope: "row" } }, [_vm._v(_vm._s(index + 1))]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(value.invitee.first_name))]),
@@ -52469,11 +52507,77 @@ var render = function() {
               )
             ]),
             _vm._v(" "),
-            _vm._m(1, true),
+            _c("td", [
+              _c(
+                "span",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: value.status != "pending",
+                      expression: "value.status != 'pending'"
+                    }
+                  ],
+                  staticClass: "fade-in",
+                  staticStyle: { color: "#15c74ca3" }
+                },
+                [_c("i", { staticClass: "fas fa-check fa-2x" })]
+              ),
+              _vm._v(" "),
+              value.status == "pending"
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success",
+                      attrs: {
+                        type: "button",
+                        disabled: value.status != "pending"
+                      },
+                      on: {
+                        click: function($event) {
+                          return _vm.confirmMeeting(value)
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                        Confirm\n                    "
+                      )
+                    ]
+                  )
+                : _vm._e()
+            ]),
             _vm._v(" "),
-            _vm._m(2, true),
+            _c("td", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-info",
+                  attrs: { type: "button", disabled: value.status != "pending" }
+                },
+                [_vm._v("Change Time")]
+              )
+            ]),
             _vm._v(" "),
-            _vm._m(3, true),
+            _c("td", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-danger",
+                  attrs: {
+                    type: "button",
+                    disabled: value.status != "pending"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.deleteMessage(value, value.id)
+                    }
+                  }
+                },
+                [_vm._v("Reject")]
+              )
+            ]),
             _vm._v(" "),
             _c(
               "div",
@@ -52493,7 +52597,7 @@ var render = function() {
                   { staticClass: "modal-dialog", attrs: { role: "document" } },
                   [
                     _c("div", { staticClass: "modal-content" }, [
-                      _vm._m(4, true),
+                      _vm._m(1, true),
                       _vm._v(" "),
                       _c("div", { staticClass: "modal-body" }, [
                         _c("div", { staticClass: "container" }, [
@@ -52619,40 +52723,6 @@ var staticRenderFns = [
           [_vm._v("Handle")]
         )
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "button",
-        { staticClass: "btn btn-success", attrs: { type: "button" } },
-        [_vm._v("Confirm")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("button", { staticClass: "btn btn-info", attrs: { type: "button" } }, [
-        _vm._v("Change Time")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "button",
-        { staticClass: "btn btn-danger", attrs: { type: "button" } },
-        [_vm._v("Reject")]
-      )
     ])
   },
   function() {
@@ -53072,12 +53142,14 @@ var render = function() {
                 message.receiver_id != _vm.id
                   ? _c("div", { staticClass: "row justify-content-start" }, [
                       _c("div", { staticClass: "col-auto" }, [
+                        _c("span", [_vm._v(_vm._s(_vm.receiver))]),
+                        _vm._v(":"),
                         _c(
                           "p",
                           {
                             staticClass: "bg-info text-white mr-5 p-2 rounded"
                           },
-                          [_vm._v(" " + _vm._s(message.content))]
+                          [_vm._v(_vm._s(message.content))]
                         )
                       ])
                     ])

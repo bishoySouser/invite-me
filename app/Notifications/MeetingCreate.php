@@ -42,6 +42,7 @@ class MeetingCreate extends Notification
     {
         return (new MailMessage)
                     ->subject('Meeting Created')
+                    ->from('Expothink@think.com', 'thinknavy')
                     ->line('Meeting created.')
                     ->action('Meeting Info', url('/'))
                     ->line('Thank you for using our application!');

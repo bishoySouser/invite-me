@@ -11,7 +11,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for='(value, index) in list'>
+                <tr v-for='(value, index) in list' :key="index" class="text-center">
                     <th scope="row">{{index+1}}</th>
                     <td>{{value.invitee.first_name}}</td>
                     <td>{{value.date_meeting}}</td>
@@ -19,13 +19,18 @@
                     <!-- Modal -->
 
                     <td>
-                        <button type="button" class="btn btn-success">Confirm</button>
+                        <span class="fade-in" v-show="value.status != 'pending'" style="color: #15c74ca3;">
+                                <i class="fas fa-check fa-2x"></i>
+                        </span>
+                        <button type="button" class="btn btn-success" v-if="value.status == 'pending'" :disabled="value.status != 'pending'" @click="confirmMeeting(value)">
+                            Confirm
+                        </button>
+                    </td>
+                    <td >
+                        <button type="button" class="btn btn-info"  :disabled="value.status != 'pending'">Change Time</button>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-info">Change Time</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger">Reject</button>
+                        <button type="button" class="btn btn-danger" :disabled="value.status != 'pending'" @click="deleteMessage(value,value.id)">Reject</button>
                     </td>
                     <!-- model -->
                     <div class="modal fade" :id="'Modal'+value.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -107,19 +112,49 @@ export default {
     ],
     data () {
         return{
-            list: [] 
+            list: [],
+            idItemDelete: '',
+            confirm:'Confirm'
         }
     },
     methods:{
         getMeetingList(){
-            axios.get('/v1/meeting/'+this.owerid)
+            axios.get('/v1/meeting/' + this.owerid)
             .then((res) => {
                 this.list = res.data.list
+            })
+        },
+        confirmMeeting(value){
+            value.status = 'approved'
+            axios.put('/v1/meeting', {
+                id: value.id,
+                invitee_id: value.invitee_id,
+                status: value.status
+            })
+            .then((res) => {
+                console.log(res)
+            })
+        },
+        deleteMessage(value,id){
+            this.idItemDelete = id;
+            console.log(value)
+            axios.delete('/v1/meeting/' + id)
+            .then((res) => {
+                let index = this.list.indexOf(value)
+                this.list.splice(index, 1);
             })
         }
     },
     created(){
         this.getMeetingList()
+        Echo.join('meetingcreate')
+                // .here()
+                // .joining()
+                // .leaving()
+                .listen('MeetingPosted', (e) => {
+                    console.log(e.meeting)
+                    this.list.push(e.meeting)
+                })
     }
     
 }
@@ -134,5 +169,24 @@ export default {
 }
 .modal .modal-body p{
     color: #dd3011;
+}
+
+//fade-in
+.fade-in {
+  animation: fadeIn ease 2s;
+  -webkit-animation: fadeIn ease 2s;
+  -moz-animation: fadeIn ease 2s;
+  -o-animation: fadeIn ease 2s;
+  -ms-animation: fadeIn ease 2s;
+}
+
+
+@keyframes fadeIn{
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
 }
 </style>
