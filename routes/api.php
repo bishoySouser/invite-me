@@ -23,7 +23,8 @@ Route::get('v1/user/list/{id}','Api\UserController@userList');
 Route::post('v1/meeting','Api\MeetingController@createMeeting'); //create New Meeting
 Route::get('v1/meeting/{id}','Api\MeetingController@receiveMeetings'); //Meetings list for one user (id)
 Route::delete('v1/meeting/{id}','Api\MeetingController@deleteMeeting'); //Delete meeting one (id)
-Route::put('v1/meeting','Api\MeetingController@MeetingEditStatus'); //Edit Meeting Status 
+Route::put('v1/meeting','Api\MeetingController@MeetingEditStatus'); //Edit Meeting Status (Approved)
+Route::put('v1/meeting/status','Api\MeetingController@changeTimeMeeting'); //Edit Meeting Status (change time)
 
 //messages
 Route::post('v1/message','Api\MessageController@store');

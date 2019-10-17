@@ -23,6 +23,7 @@ class CreateMeetingsTable extends Migration
             $table->time('start_time');
             $table->time('finish_time')->nullable();
             $table->enum('status', ['pending', 'change time', 'approved']);
+            $table->integer('do_order'); // who did order 
             $table->timestamps();
             // 'owner' field referenced the 'id' field of 'users' table:
             $table->foreign('owner_id')

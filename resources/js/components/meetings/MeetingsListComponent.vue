@@ -26,14 +26,15 @@
                             Confirm
                         </button>
                     </td>
-                    <td >
-                        <button type="button" class="btn btn-info"  :disabled="value.status != 'pending'">Change Time</button>
+                    <td>
+                        <button type="button" class="btn btn-info"  :disabled="value.status != 'pending'" data-toggle="modal" :data-target="'#ModalChMeeting'+value.id">Change Time</button>
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger" :disabled="value.status != 'pending'" @click="deleteMessage(value,value.id)">Reject</button>
                     </td>
-                    <!-- model -->
-                    <div class="modal fade" :id="'Modal'+value.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <ModelChangeTime @change-mode="changeMode(value)" :meeting='value'/>
+                    <!-- model info -->
+                    <div class="modal fade text-left" :id="'Modal'+value.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -91,7 +92,7 @@
                                     </div>
                                     
                                 </div>
-                                <div class="status text-center bg-info text-white">
+                                <div class="status text-center text-white" :class="(value.status == 'pending') ? 'bg-info' : 'bg-success'">
                                     {{value.status}}
                                 </div>
                             </div>
@@ -105,19 +106,29 @@
 </template>
 
 <script>
+import ModelChangeTime from "../models/ModelChangeTimeComponent"
 export default {
     name:'meetingList',
     props:[
         'owerid'
     ],
+    components: {
+        ModelChangeTime
+    },
     data () {
         return{
             list: [],
-            idItemDelete: '',
-            confirm:'Confirm'
+            idItemDelete: ''
         }
     },
     methods:{
+        changeMode(value){
+            value.status= 'change Time'
+            console.log(value);
+            let index = this.list.indexOf(value)
+            this.list.splice(index, 1);
+            
+        },
         getMeetingList(){
             axios.get('/v1/meeting/' + this.owerid)
             .then((res) => {
@@ -152,7 +163,7 @@ export default {
                 // .joining()
                 // .leaving()
                 .listen('MeetingPosted', (e) => {
-                    console.log(e.meeting)
+                    
                     this.list.push(e.meeting)
                 })
     }

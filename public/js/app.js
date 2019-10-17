@@ -1989,6 +1989,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _models_ModelChangeTimeComponent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/ModelChangeTimeComponent */ "./resources/js/components/models/ModelChangeTimeComponent.vue");
 //
 //
 //
@@ -2095,17 +2096,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'meetingList',
   props: ['owerid'],
+  components: {
+    ModelChangeTime: _models_ModelChangeTimeComponent__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   data: function data() {
     return {
       list: [],
-      idItemDelete: '',
-      confirm: 'Confirm'
+      idItemDelete: ''
     };
   },
   methods: {
+    changeMode: function changeMode(value) {
+      value.status = 'change Time';
+      console.log(value);
+      var index = this.list.indexOf(value);
+      this.list.splice(index, 1);
+    },
     getMeetingList: function getMeetingList() {
       var _this = this;
 
@@ -2143,10 +2154,138 @@ __webpack_require__.r(__webpack_exports__);
     // .joining()
     // .leaving()
     .listen('MeetingPosted', function (e) {
-      console.log(e.meeting);
-
       _this3.list.push(e.meeting);
     });
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue2-datepicker */ "./node_modules/vue2-datepicker/lib/index.js");
+/* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'ModelChangeTime',
+  props: ['meeting'],
+  components: {
+    DatePicker: vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default.a
+  },
+  data: function data() {
+    return {
+      time: "",
+      form: new Form({
+        id: this.meeting.id,
+        owner: this.meeting.owner_id,
+        invitee: this.meeting.invitee_id,
+        date: "",
+        start_time: "",
+        do_order: this.meeting.owner_id
+      }),
+      timePickerOptions: {
+        start: '9:00',
+        step: '00:30',
+        end: '22:00'
+      }
+    };
+  },
+  methods: {
+    changeDate: function changeDate() {
+      var _this = this;
+
+      this.$Progress.start();
+      this.form.put('v1/meeting/status').then(function (response) {
+        // console.log(response.data.msg);
+        _this.$emit('change-mode');
+
+        _this.form.reset();
+
+        _this.time = "";
+        $('#ModalChMeeting' + _this.meeting.id).modal('hide');
+        toast.fire({
+          type: 'success',
+          title: response.data.msg
+        });
+      });
+      this.$Progress.finish();
+    }
+  },
+  watch: {
+    time: function time(val) {
+      var f = this.form; //var equel form object
+
+      f.start_time = val.slice(0, 8); // delete am or pm
+    }
   }
 });
 
@@ -8835,6 +8974,25 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, ".modal .modal-body span[data-v-7fbf26fb] {\n  font-weight: bold;\n  font-size: 20px;\n  color: #000;\n}\n.modal .modal-body p[data-v-7fbf26fb] {\n  color: #dd3011;\n}\n.fade-in[data-v-7fbf26fb] {\n  animation: fadeIn-data-v-7fbf26fb ease 2s;\n  -webkit-animation: fadeIn-data-v-7fbf26fb ease 2s;\n  -moz-animation: fadeIn-data-v-7fbf26fb ease 2s;\n  -o-animation: fadeIn-data-v-7fbf26fb ease 2s;\n  -ms-animation: fadeIn-data-v-7fbf26fb ease 2s;\n}\n@-webkit-keyframes fadeIn-data-v-7fbf26fb {\n0% {\n    opacity: 0;\n}\n100% {\n    opacity: 1;\n}\n}\n@keyframes fadeIn-data-v-7fbf26fb {\n0% {\n    opacity: 0;\n}\n100% {\n    opacity: 1;\n}\n}", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "form > div:nth-child(1) > div > div[data-v-fe25fcbe] {\n  padding: 0px !important;\n}\nform > div:nth-child(2) > div > div[data-v-fe25fcbe] {\n  padding: 0px !important;\n}", ""]);
 
 // exports
 
@@ -47625,6 +47783,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--7-2!../../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../../node_modules/vue-loader/lib??vue-loader-options!./ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true& */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/models/ModelMeetingComponent.vue?vue&type=style&index=0&id=b9a249de&lang=scss&scoped=true&":
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/models/ModelMeetingComponent.vue?vue&type=style&index=0&id=b9a249de&lang=scss&scoped=true& ***!
@@ -52486,216 +52674,244 @@ var render = function() {
       _c(
         "tbody",
         _vm._l(_vm.list, function(value, index) {
-          return _c("tr", { key: index, staticClass: "text-center" }, [
-            _c("th", { attrs: { scope: "row" } }, [_vm._v(_vm._s(index + 1))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(value.invitee.first_name))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(value.date_meeting))]),
-            _vm._v(" "),
-            _c("td", [
+          return _c(
+            "tr",
+            { key: index, staticClass: "text-center" },
+            [
+              _c("th", { attrs: { scope: "row" } }, [
+                _vm._v(_vm._s(index + 1))
+              ]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(value.invitee.first_name))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(value.date_meeting))]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "a",
+                  {
+                    attrs: {
+                      href: "#",
+                      "data-toggle": "modal",
+                      "data-target": "#Modal" + value.id
+                    }
+                  },
+                  [_vm._v("Info")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "span",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: value.status != "pending",
+                        expression: "value.status != 'pending'"
+                      }
+                    ],
+                    staticClass: "fade-in",
+                    staticStyle: { color: "#15c74ca3" }
+                  },
+                  [_c("i", { staticClass: "fas fa-check fa-2x" })]
+                ),
+                _vm._v(" "),
+                value.status == "pending"
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-success",
+                        attrs: {
+                          type: "button",
+                          disabled: value.status != "pending"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.confirmMeeting(value)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                        Confirm\n                    "
+                        )
+                      ]
+                    )
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-info",
+                    attrs: {
+                      type: "button",
+                      disabled: value.status != "pending",
+                      "data-toggle": "modal",
+                      "data-target": "#ModalChMeeting" + value.id
+                    }
+                  },
+                  [_vm._v("Change Time")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: {
+                      type: "button",
+                      disabled: value.status != "pending"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteMessage(value, value.id)
+                      }
+                    }
+                  },
+                  [_vm._v("Reject")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("ModelChangeTime", {
+                attrs: { meeting: value },
+                on: {
+                  "change-mode": function($event) {
+                    return _vm.changeMode(value)
+                  }
+                }
+              }),
+              _vm._v(" "),
               _c(
-                "a",
+                "div",
                 {
+                  staticClass: "modal fade text-left",
                   attrs: {
-                    href: "#",
-                    "data-toggle": "modal",
-                    "data-target": "#Modal" + value.id
+                    id: "Modal" + value.id,
+                    tabindex: "-1",
+                    role: "dialog",
+                    "aria-labelledby": "exampleModalLabel",
+                    "aria-hidden": "true"
                   }
                 },
-                [_vm._v("Info")]
-              )
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c(
-                "span",
-                {
-                  directives: [
+                [
+                  _c(
+                    "div",
                     {
-                      name: "show",
-                      rawName: "v-show",
-                      value: value.status != "pending",
-                      expression: "value.status != 'pending'"
-                    }
-                  ],
-                  staticClass: "fade-in",
-                  staticStyle: { color: "#15c74ca3" }
-                },
-                [_c("i", { staticClass: "fas fa-check fa-2x" })]
-              ),
-              _vm._v(" "),
-              value.status == "pending"
-                ? _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: {
-                        type: "button",
-                        disabled: value.status != "pending"
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.confirmMeeting(value)
-                        }
-                      }
+                      staticClass: "modal-dialog",
+                      attrs: { role: "document" }
                     },
                     [
-                      _vm._v(
-                        "\n                        Confirm\n                    "
-                      )
-                    ]
-                  )
-                : _vm._e()
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-info",
-                  attrs: { type: "button", disabled: value.status != "pending" }
-                },
-                [_vm._v("Change Time")]
-              )
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-danger",
-                  attrs: {
-                    type: "button",
-                    disabled: value.status != "pending"
-                  },
-                  on: {
-                    click: function($event) {
-                      return _vm.deleteMessage(value, value.id)
-                    }
-                  }
-                },
-                [_vm._v("Reject")]
-              )
-            ]),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "modal fade",
-                attrs: {
-                  id: "Modal" + value.id,
-                  tabindex: "-1",
-                  role: "dialog",
-                  "aria-labelledby": "exampleModalLabel",
-                  "aria-hidden": "true"
-                }
-              },
-              [
-                _c(
-                  "div",
-                  { staticClass: "modal-dialog", attrs: { role: "document" } },
-                  [
-                    _c("div", { staticClass: "modal-content" }, [
-                      _vm._m(1, true),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "modal-body" }, [
-                        _c("div", { staticClass: "container" }, [
-                          _c("div", { staticClass: "row" }, [
-                            _c("div", { staticClass: "col" }, [
-                              _c("p", [
-                                _c("span", [_vm._v("Invitee:")]),
-                                _vm._v(
-                                  "\n                                                " +
-                                    _vm._s(value.invitee.first_name) +
-                                    "\n                                            "
-                                )
+                      _c("div", { staticClass: "modal-content" }, [
+                        _vm._m(1, true),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-body" }, [
+                          _c("div", { staticClass: "container" }, [
+                            _c("div", { staticClass: "row" }, [
+                              _c("div", { staticClass: "col" }, [
+                                _c("p", [
+                                  _c("span", [_vm._v("Invitee:")]),
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(value.invitee.first_name) +
+                                      "\n                                            "
+                                  )
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "col" }, [
+                                _c("p", [
+                                  _c("span", [_vm._v("Subject:")]),
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(value.subject) +
+                                      "\n                                            "
+                                  )
+                                ])
                               ])
                             ]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "col" }, [
-                              _c("p", [
-                                _c("span", [_vm._v("Subject:")]),
-                                _vm._v(
-                                  "\n                                                " +
-                                    _vm._s(value.subject) +
-                                    "\n                                            "
-                                )
-                              ])
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "row" }, [
-                            _c("div", { staticClass: "col" }, [
-                              _c("p", [
-                                _c("span", [_vm._v("Description:")]),
-                                _vm._v(
-                                  "\n                                                " +
-                                    _vm._s(value.description) +
-                                    "\n                                            "
-                                )
-                              ])
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "row" }, [
-                            _c("div", { staticClass: "col" }, [
-                              _c("p", [
-                                _c("span", [_vm._v("Date:")]),
-                                _vm._v(
-                                  "\n                                                " +
-                                    _vm._s(value.date_meeting) +
-                                    "\n                                            "
-                                )
-                              ])
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "row" }, [
-                            _c("div", { staticClass: "col" }, [
-                              _c("p", [
-                                _c("span", [_vm._v("Form:")]),
-                                _vm._v(
-                                  "\n                                                " +
-                                    _vm._s(value.start_time) +
-                                    "\n                                            "
-                                )
+                            _c("div", { staticClass: "row" }, [
+                              _c("div", { staticClass: "col" }, [
+                                _c("p", [
+                                  _c("span", [_vm._v("Description:")]),
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(value.description) +
+                                      "\n                                            "
+                                  )
+                                ])
                               ])
                             ]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "col" }, [
-                              _c("p", [
-                                _c("span", [_vm._v("To:")]),
-                                _vm._v(
-                                  "\n                                                " +
-                                    _vm._s(value.finish_time) +
-                                    "\n                                            "
-                                )
+                            _c("div", { staticClass: "row" }, [
+                              _c("div", { staticClass: "col" }, [
+                                _c("p", [
+                                  _c("span", [_vm._v("Date:")]),
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(value.date_meeting) +
+                                      "\n                                            "
+                                  )
+                                ])
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "row" }, [
+                              _c("div", { staticClass: "col" }, [
+                                _c("p", [
+                                  _c("span", [_vm._v("Form:")]),
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(value.start_time) +
+                                      "\n                                            "
+                                  )
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "col" }, [
+                                _c("p", [
+                                  _c("span", [_vm._v("To:")]),
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(value.finish_time) +
+                                      "\n                                            "
+                                  )
+                                ])
                               ])
                             ])
                           ])
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "status text-center bg-info text-white"
-                        },
-                        [
-                          _vm._v(
-                            "\n                                " +
-                              _vm._s(value.status) +
-                              "\n                            "
-                          )
-                        ]
-                      )
-                    ])
-                  ]
-                )
-              ]
-            )
-          ])
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "status text-center text-white",
+                            class:
+                              value.status == "pending"
+                                ? "bg-info"
+                                : "bg-success"
+                          },
+                          [
+                            _vm._v(
+                              "\n                                " +
+                                _vm._s(value.status) +
+                                "\n                            "
+                            )
+                          ]
+                        )
+                      ])
+                    ]
+                  )
+                ]
+              )
+            ],
+            1
+          )
         }),
         0
       )
@@ -52735,6 +52951,196 @@ var staticRenderFns = [
         { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
         [_vm._v("Meeting Info")]
       ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=template&id=fe25fcbe&scoped=true&":
+/*!**********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=template&id=fe25fcbe&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "modal fade",
+      attrs: {
+        id: "ModalChMeeting" + _vm.meeting.id,
+        tabindex: "-1",
+        role: "dialog"
+      }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog", attrs: { role: "document" } }, [
+        _c("div", { staticClass: "modal-content" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-body" }, [
+            _c("div", { staticClass: "container text-monospace" }, [
+              _c("div", { staticClass: "row d-block" }, [
+                _c("span", { staticClass: "h2 d-block" }, [_vm._v("Old Date")]),
+                _vm._v(" "),
+                _c("div", { staticClass: "text-monospace" }, [
+                  _c("span", { staticClass: "font-weight-normal" }, [
+                    _vm._v(_vm._s(_vm.meeting.date_meeting))
+                  ]),
+                  _vm._v(" "),
+                  _c("span", { staticClass: " text-secondary" }, [
+                    _vm._v(_vm._s(_vm.meeting.start_time))
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  attrs: { method: "POST" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.changeDate($event)
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-2 col-form-label",
+                        attrs: { for: "inputDate" }
+                      },
+                      [_vm._v("Date")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "col-sm-10" },
+                      [
+                        _c("date-picker", {
+                          staticClass: "form-control",
+                          class: { "is-invalid": _vm.form.errors.has("date") },
+                          attrs: {
+                            lang: "en",
+                            "input-name": "date",
+                            valueType: "format"
+                          },
+                          model: {
+                            value: _vm.form.date,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "date", $$v)
+                            },
+                            expression: "form.date"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "date" }
+                        })
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-2 col-form-label",
+                        attrs: { for: "inputTime" }
+                      },
+                      [_vm._v("Time")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "col-sm-10" },
+                      [
+                        _c("date-picker", {
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.form.errors.has("start_time")
+                          },
+                          attrs: {
+                            lang: "en",
+                            "input-name": "start_time",
+                            type: "time",
+                            "value-type": "format",
+                            format: "HH:mm:ss",
+                            "time-picker-options": _vm.timePickerOptions,
+                            placeholder: "Select Time"
+                          },
+                          model: {
+                            value: _vm.time,
+                            callback: function($$v) {
+                              _vm.time = $$v
+                            },
+                            expression: "time"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "start_time" }
+                        })
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary float-right",
+                      attrs: { type: "submit" }
+                    },
+                    [_vm._v("Save changes")]
+                  )
+                ]
+              )
+            ])
+          ])
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Change Date")]),
       _vm._v(" "),
       _c(
         "button",
@@ -65850,6 +66256,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsListComponent_vue_vue_type_template_id_7fbf26fb_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsListComponent_vue_vue_type_template_id_7fbf26fb_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/models/ModelChangeTimeComponent.vue":
+/*!*********************************************************************!*\
+  !*** ./resources/js/components/models/ModelChangeTimeComponent.vue ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ModelChangeTimeComponent_vue_vue_type_template_id_fe25fcbe_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ModelChangeTimeComponent.vue?vue&type=template&id=fe25fcbe&scoped=true& */ "./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=template&id=fe25fcbe&scoped=true&");
+/* harmony import */ var _ModelChangeTimeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ModelChangeTimeComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ModelChangeTimeComponent_vue_vue_type_style_index_0_id_fe25fcbe_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true& */ "./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _ModelChangeTimeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ModelChangeTimeComponent_vue_vue_type_template_id_fe25fcbe_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ModelChangeTimeComponent_vue_vue_type_template_id_fe25fcbe_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "fe25fcbe",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/models/ModelChangeTimeComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ModelChangeTimeComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true&":
+/*!*******************************************************************************************************************************!*\
+  !*** ./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true& ***!
+  \*******************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_style_index_0_id_fe25fcbe_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--7-2!../../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../../node_modules/vue-loader/lib??vue-loader-options!./ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=style&index=0&id=fe25fcbe&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_style_index_0_id_fe25fcbe_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_style_index_0_id_fe25fcbe_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_style_index_0_id_fe25fcbe_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_style_index_0_id_fe25fcbe_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_style_index_0_id_fe25fcbe_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=template&id=fe25fcbe&scoped=true&":
+/*!****************************************************************************************************************!*\
+  !*** ./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=template&id=fe25fcbe&scoped=true& ***!
+  \****************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_template_id_fe25fcbe_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ModelChangeTimeComponent.vue?vue&type=template&id=fe25fcbe&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/models/ModelChangeTimeComponent.vue?vue&type=template&id=fe25fcbe&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_template_id_fe25fcbe_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ModelChangeTimeComponent_vue_vue_type_template_id_fe25fcbe_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

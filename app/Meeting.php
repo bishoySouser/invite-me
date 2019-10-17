@@ -9,7 +9,8 @@ class Meeting extends Model
 {
     protected $fillable = [
             'owner_id', 'invitee_id', 'subject',
-            'description', 'date_meeting', 'start_time', 'finish_time'
+            'description', 'date_meeting', 'start_time', 'finish_time',
+            'do_order'
     ];
     // A meeting belongs to a owner 
     public function owner()
