@@ -26,6 +26,8 @@ Route::delete('v1/meeting/{id}','Api\MeetingController@deleteMeeting'); //Delete
 Route::put('v1/meeting','Api\MeetingController@MeetingEditStatus'); //Edit Meeting Status (Approved)
 Route::put('v1/meeting/status','Api\MeetingController@changeTimeMeeting'); //Edit Meeting Status (change time)
 
+Route::get('v1/meeting/{owner}/{invitee}/{date?}','Api\MeetingController@meetingBook');//get meeting book
+
 //messages
 Route::post('v1/message','Api\MessageController@store');
 Route::get('v1/message/one={one}/two={two}','Api\MessageController@showChat');

@@ -7,9 +7,11 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import axios from 'axios';
+window.moment = require('moment');
 import { Form, HasError,AlertError, AlertErrors, AlertSuccess } from 'vform';
 
 import swal from 'sweetalert2'
+// swal
 window.swal = swal;
 
 const toast = swal.mixin({
@@ -31,6 +33,8 @@ Vue.component(AlertErrors.name, AlertErrors)
 Vue.component(AlertSuccess.name, AlertSuccess)
 
 import VueProgressBar from 'vue-progressbar'
+
+
 
 Vue.use(VueProgressBar, {
   color: 'rgb(143, 255, 199)',

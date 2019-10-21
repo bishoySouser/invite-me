@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Meeting;
 use App\User;
 use Auth;
+use DB;
 
 use App\Events\MeetingPosted;
 
@@ -23,12 +24,35 @@ class MeetingController extends Controller
             'invitee' => 'required|numeric',
             'subject' => 'required|max:20',
             'description' =>'required|min:10',
-            'date' => 'required|date_format:Y-m-d|after:'.date("Y-m-d"),
+            'date' => 'required|date_format:Y-m-d|after_or_equal:'.date("Y-m-d"),
             'start_time' => 'required|date_format:H:i:s',
-        ],
-        [
-            'date.after' => 'The date must be a date after today.'
         ]);
+    }
+
+    public function meetingBook($owner,$invitee,$date= null){
+        $bookOwner = DB::table('meetings')
+                    ->where('date_meeting', $date)
+                    ->where('status', 'approved')
+                    ->where(function ($query) use($owner){
+                        $query->where('owner_id', $owner)
+                            ->orWhere('invitee_id', $owner);
+                    })
+                    ->get('start_time');
+        $pluckedOwner = $bookOwner->pluck('start_time');
+        
+        $bookInvitee = DB::table('meetings')
+                    ->where('date_meeting', $date)
+                    ->where('status', 'approved')
+                    ->where(function ($query) use($invitee){
+                        $query->where('owner_id', $invitee)
+                            ->orWhere('invitee_id', $invitee);
+                    })
+                    ->get();
+        $pluckedInvitee = $bookInvitee->pluck('start_time');
+        
+        $merged = $pluckedOwner->merge($pluckedInvitee);
+
+        return response()->json($merged, 200);
     }
 
     public function createMeeting(Request $request)
@@ -133,7 +157,7 @@ class MeetingController extends Controller
             'owner' => 'required|numeric',
             'invitee' => 'required|numeric',
             'do_order' => 'required|numeric',
-            'date' => 'required|date_format:Y-m-d|after:'.date("Y-m-d"),
+            'date' => 'required|date_format:Y-m-d|after_or_equal:'.date("Y-m-d"),
             'start_time' => 'required|date_format:H:i:s'
         ]);
 

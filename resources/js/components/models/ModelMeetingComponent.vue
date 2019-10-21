@@ -41,6 +41,8 @@
                                 <date-picker lang="en" input-name='date'
                                 class="form-control"
                                 :class="{ 'is-invalid': form.errors.has('date') }"
+                                onkeydown="return false"
+                                @panel-change="handlePanelChange(form.date, form.owner , form.invitee)"
                                 v-model="form.date" valueType="format" :disabled-days="disabledDates">
                                 </date-picker>
                                 
@@ -53,8 +55,9 @@
                                  <date-picker lang="en" input-name='start_time' 
                                  class="form-control"
                                 :class="{ 'is-invalid': form.errors.has('start_time') }"
-                                 type="time" v-model="time" value-type="format" format="HH:mm:ss" 
-                                 :time-picker-options="timePickerOptions" placeholder="Select Time">
+                                 type="time" v-model="time" value-type="format" format="HH:mm:ss"
+                                  
+                                 :time-picker-options="timePickerOptions" placeholder="Select Time"  onkeydown="return false" :disabled='form.date < now'>
                                  </date-picker>
                                  <has-error :form="form" field="start_time"></has-error>
                             </div>
@@ -79,8 +82,12 @@ export default {
     components: { DatePicker },
     data () {
         return{
+            now: moment().format("YYYY-MM-DD"),
             invitee: this.inviteeName,
             time:"",
+            disabledTime: [],
+            oldDate:'',
+            hiddenTime:[],
             
             disabledDates: ['2019'],
             form: new Form({
@@ -99,6 +106,51 @@ export default {
         }
     },
     methods:{
+        bookMeeting(owner,invitee,date){
+            axios.get('/v1/meeting/'+owner+'/'+invitee+'/'+date)
+            .then(res => {
+                this.disabledTime = res.data
+            })
+        },
+        handlePanelChange(date, owner , invitee){
+            axios.get('/v1/meeting/'+owner+'/'+invitee+'/'+date)
+            .then(res => {
+
+                if(this.oldDate != this.form.date){
+                    this.oldDate = this.form.date
+                    this.disabledTime = res.data
+                    this.hiddenTime = []
+                    console.log('delete')
+                    $('.mx-time-picker-item.cell').show();
+                    for(let i=0; i < this.disabledTime.length ;i++){
+                        let str = this.disabledTime[i].slice(0, -3); //remove second :00 like this 9:00:00 to 9:00
+                        $('li:contains('+str+')')[0].style.display = 'none' // remove
+                        this.hiddenTime.push(str)
+                        this.time = ''
+                    }
+                }else{
+                    this.oldDate = this.form.date
+                    this.disabledTime = res.data
+                    this.hiddenTime = []
+                    console.log('diff')
+                    $('.mx-time-picker-item.cell').show();
+                    for(let i=0; i < this.disabledTime.length ;i++){
+                        let str = this.disabledTime[i].slice(0, -3); //remove second :00 like this 9:00:00 to 9:00
+                        $('li:contains('+str+')')[0].style.display = 'none' // remove
+                        this.hiddenTime.push(str)
+                        this.time = ''
+                    }
+                }
+            })
+            // console.log('dsdsd'+this.disabledTime.length)
+            // for(let i=0 ; i < loop.length ; i++){
+            //     console.log('fs')
+            // }
+            
+            // $( "li:contains('09:30')")[0].style.display = 'none'
+            // console.log($( "li:contains('09:00')")[0].style)
+
+        },
 
         onSubmit(){  
               this.$Progress.start();
