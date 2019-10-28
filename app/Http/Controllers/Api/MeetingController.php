@@ -108,12 +108,34 @@ class MeetingController extends Controller
     public function receiveMeetings($id){ /* --Meetings panding-- */
         // query: Meetings where user (id) & pending (Meetings status) and include info user (invitee)
         $meetings = Meeting::with('invitee')
-                    ->where('owner_id', $id)
+                    ->with('owner')
+                    ->where(function($q) use($id) {
+                        $q->where('owner_id', $id)
+                        ->orwhere('invitee_id', $id);
+                    })->where('do_order', '!=', $id)
                     ->where('status', 'pending')
                     ->get();
         
         $response = [
-            'msg' => 'Meetings list for user',
+            'msg' => 'Meetings are pending',
+            'list' => $meetings
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function aprrovedMeetings($id){ /* --Meetings aprroved-- */
+        // query: Meetings where user (id) & aprroved (Meetings status) and include info user (invitee)
+        $meetings = Meeting::with('invitee')
+                    ->with('owner')
+                    ->where(function($q) use($id) {
+                        $q->where('owner_id', $id)
+                        ->orwhere('invitee_id', $id);
+                    })->where('status', 'approved')
+                    ->get();
+        
+        $response = [
+            'msg' => 'Meetings are approved',
             'list' => $meetings
         ];
 
@@ -124,22 +146,23 @@ class MeetingController extends Controller
         //valid request
         $this->validate($request, [
             'id' => 'required|numeric',
-            'invitee_id' => 'required|numeric',
+            'do_order' => 'required|numeric',
             'status' => 'required'
         ]);
         // varliable for request
         $id = $request->input('id');
-        $invitee= $request->input('invitee_id');
-        $status = $request->status;
+        $do_order = $request->input('do_order');
+        $status = $request->input('status');
         //find meeting
         $meeting = Meeting::find($id);
+        $meeting->do_order = $do_order;
         $meeting->status = $status;
         //update meeting
         if (!$meeting->update()) {
             return response()->json(['msg' => 'Error during meeting updating'], 404);
         }
         // send notify when send meeting
-        User::find($invitee)->notify(new MeetingCreate);
+        // User::find($invitee)->notify(new MeetingCreate);
         $response = [
             'msg' => 'Meeting Approved',
             'meeting' => $meeting
@@ -150,12 +173,10 @@ class MeetingController extends Controller
     }
     
 
-    public function changeTimeMeeting(Request $request){ //meeting status "change time"
+    public function changeTimeMeeting(Request $request){ //meeting edit status "change time"
         //valid request
         $this->validate($request, [
             'id' => 'required|numeric',
-            'owner' => 'required|numeric',
-            'invitee' => 'required|numeric',
             'do_order' => 'required|numeric',
             'date' => 'required|date_format:Y-m-d|after_or_equal:'.date("Y-m-d"),
             'start_time' => 'required|date_format:H:i:s'
@@ -165,22 +186,22 @@ class MeetingController extends Controller
         //check if meeting exist through id and owner_id & invitee_id
         $id = $request->input('id'); 
         $meeting = Meeting::find($id);
-        if(!$meeting){
-            return response()->json(['msg' => 'Meeting not exist. check meeting'], 404);
-        }else{
-            if($meeting->owner_id !== $request->input('owner') && $meeting->owner_id !== $request->input('invitee') ){
-                return response()->json(['msg' => 'Error 404. Check your information'], 404);
-            }
-        }
+        // if(!$meeting){
+        //     return response()->json(['msg' => 'Meeting not exist. check meeting'], 404);
+        // }else{
+        //     if($meeting->owner_id !== $request->input('owner') && $meeting->owner_id !== $request->input('invitee') ){
+        //         return response()->json(['msg' => 'Error 404. Check your information'], 404);
+        //     }
+        // }
 
         $do_order = $request->input('do_order');
-        // check do_order has owenr or invitee
-        if($do_order !== $request->input('owner') && $do_order !== $request->input('invitee')){
-            return response()->json(['msg' => 'Error 404. Check Users Meeting'], 404);
-        }
+        // // check do_order has owenr or invitee
+        // if($do_order !== $request->input('owner') && $do_order !== $request->input('invitee')){
+        //     return response()->json(['msg' => 'Error 404. Check Users Meeting'], 404);
+        // }
         $date = $request->input('date');
         $start = $request->input('start_time');
-        $status = 'change Time';
+        $status = 'pending';
         //add 30 mins to Strat time meeting
         // format: H:i:ss , time , 1800s = 1800/60 = 30mins //
         // Duration Meeting = 1800s = 30Mins

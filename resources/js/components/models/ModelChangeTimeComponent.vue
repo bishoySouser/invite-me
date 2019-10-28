@@ -66,6 +66,7 @@ export default {
     name: 'ModelChangeTime',
     props: [
         'meeting',
+        'userId'
     ],
     components: { DatePicker },
     data() {
@@ -73,11 +74,10 @@ export default {
             time:"",
             form: new Form({
                 id: this.meeting.id,
-                owner:this.meeting.owner_id,
-                invitee:this.meeting.invitee_id,
+                
                 date:"",
                 start_time:"",
-                do_order:this.meeting.owner_id
+                do_order:this.userId
             }),
             timePickerOptions:{
                 start: '9:00',

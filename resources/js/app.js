@@ -7,6 +7,8 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import axios from 'axios';
+import router from './router';
+
 window.moment = require('moment');
 import { Form, HasError,AlertError, AlertErrors, AlertSuccess } from 'vform';
 
@@ -60,6 +62,9 @@ Vue.component('meeting-list-component', require('./components/meetings/MeetingsL
 Vue.component('user-list-component', require('./components/Users/UsersListComponent.vue').default);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
+Vue.component('MeetingConfirm', require('./components/pages/PageMeetingConfirm').default);
+
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -69,4 +74,5 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
+    router
 });

@@ -13,7 +13,8 @@
             <tbody>
                 <tr v-for='(value, index) in list' :key="index" class="text-center">
                     <th scope="row">{{index+1}}</th>
-                    <td>{{value.invitee.first_name}}</td>
+                    <td v-if="value.invitee_id != owerid">{{value.invitee.first_name}}</td>
+                    <td v-if="value.owner_id != owerid">{{value.owner.first_name}}</td>
                     <td>{{value.date_meeting}}</td>
                     <td><a href="#" data-toggle="modal" :data-target="'#Modal'+value.id">Info</a></td>
                     <!-- Modal -->
@@ -32,7 +33,7 @@
                     <td>
                         <button type="button" class="btn btn-danger" :disabled="value.status != 'pending'" @click="deleteMessage(value,value.id)">Reject</button>
                     </td>
-                    <ModelChangeTime @change-mode="changeMode(value)" :meeting='value'/>
+                    <ModelChangeTime @change-mode="changeMode(value)" :userId="owerid" :meeting='value'/>
                     <!-- model info -->
                     <div class="modal fade text-left" :id="'Modal'+value.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -139,7 +140,7 @@ export default {
             value.status = 'approved'
             axios.put('/v1/meeting', {
                 id: value.id,
-                invitee_id: value.invitee_id,
+                do_order: this.owerid,
                 status: value.status
             })
             .then((res) => {

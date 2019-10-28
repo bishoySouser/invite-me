@@ -14,11 +14,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    
-                <meeting-list-component
-                :owerId="{{Auth::id()}}"
-                 />   
-
+                    <router-view :id="{{Auth::id()}}"></router-view>
                 </div>
             </div>
         </div>

@@ -142,13 +142,7 @@ export default {
                     }
                 }
             })
-            // console.log('dsdsd'+this.disabledTime.length)
-            // for(let i=0 ; i < loop.length ; i++){
-            //     console.log('fs')
-            // }
-            
-            // $( "li:contains('09:30')")[0].style.display = 'none'
-            // console.log($( "li:contains('09:00')")[0].style)
+
 
         },
 
