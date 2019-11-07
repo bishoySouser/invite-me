@@ -7,4 +7,4 @@ One TO One Meeting
 
 ## License
 
-ThinkNavy Company(https://opensource.org/licenses/MIT).
+ThinkNavy Company.
