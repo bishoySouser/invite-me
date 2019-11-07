@@ -6,6 +6,7 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+
 import axios from 'axios';
 import router from './router';
 
@@ -44,8 +45,9 @@ Vue.use(VueProgressBar, {
   height: '2px'
 })
 
-
-
+//import chartjs
+import Raphael from 'raphael/raphael'
+global.Raphael = Raphael
 
 /**
  * The following block of code may be used to automatically register your
@@ -64,6 +66,8 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 Vue.component('MeetingConfirm', require('./components/pages/PageMeetingConfirm').default);
 
+//for admin
+Vue.component('AdminSildbar', require('./components/admin/AdminSildebarComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

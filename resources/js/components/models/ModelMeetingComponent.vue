@@ -115,7 +115,6 @@ export default {
         handlePanelChange(date, owner , invitee){
             axios.get('/v1/meeting/'+owner+'/'+invitee+'/'+date)
             .then(res => {
-
                 if(this.oldDate != this.form.date){
                     this.oldDate = this.form.date
                     this.disabledTime = res.data

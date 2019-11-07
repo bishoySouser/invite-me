@@ -17,10 +17,22 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home',[
+    'middleware' => 'admin', 
+    'uses'=>'HomeController@index'
+])->name('home');
 
 // meeting
-Route::get('/meeting', function () {
+Route::get('/meeting/{staus?}', function () {
     return view('pages.meeting');
-})->name('meeting');
+})->name('meeting')->middleware('auth');
+
+// admin
+Route::get('/admin/{category?}', function () {
+    if(Auth::user()->user_type !== 'Admin'){
+        return redirect()->back();
+    }
+    return view('admin.home');
+})->name('admin')->middleware('auth');
+
 

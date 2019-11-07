@@ -11,6 +11,9 @@
                 </tr>
             </thead>
             <tbody>
+                <tr v-if="list.length === 0">
+                   <td colspan="7" class="text-center">Meeting pending not exist</td> 
+                </tr>
                 <tr v-for='(value, index) in list' :key="index" class="text-center">
                     <th scope="row">{{index+1}}</th>
                     <td v-if="value.invitee_id != owerid">{{value.invitee.first_name}}</td>
@@ -23,7 +26,7 @@
                         <span class="fade-in" v-show="value.status != 'pending'" style="color: #15c74ca3;">
                                 <i class="fas fa-check fa-2x"></i>
                         </span>
-                        <button type="button" class="btn btn-success" v-if="value.status == 'pending'" :disabled="value.status != 'pending'" @click="confirmMeeting(value)">
+                        <button type="button" class="btn btn-success" v-if="value.status == 'pending'" :disabled="disableTime(value.date_meeting,value.start_time) " @click="confirmMeeting(value)">
                             Confirm
                         </button>
                     </td>
@@ -119,7 +122,8 @@ export default {
     data () {
         return{
             list: [],
-            idItemDelete: ''
+            idItemDelete: '',
+            blockApproved: [],
         }
     },
     methods:{
@@ -145,6 +149,42 @@ export default {
             })
             .then((res) => {
                 console.log(res)
+                location.reload()
+            })
+        },
+        disableTime(date, time){
+            for(let i=0; i < this.blockApproved.length; i++){
+                if(this.blockApproved[i][0] === date){
+                    console.log(this.blockApproved[i][1].length)
+                     for(let j=0; j < this.blockApproved[i][1].length; j++){
+                         if(this.blockApproved[i][1][j] === time){
+                            return true;
+                         }
+                         
+                     }
+                }
+            }
+        },
+        meetingApproved(){
+            axios.get('v1/meeting/approved/' + this.owerid)
+            .then((res) => {
+                // console.log(res.data.list)
+                for(let i=0; i < res.data.list.length; i++){
+                    let newDate = res.data.list[i].date_meeting
+                    let newtime = res.data.list[i].start_time
+                    // check if blockApproved array has newValue or no
+                    if (!this.blockApproved.some(el => el[0] === newDate)){
+                            this.blockApproved.push([newDate,[newtime]] )       
+                    }else{
+                        
+                        this.blockApproved.forEach(e => e[0] === newDate ? e[1].push(newtime) : null)
+                    }
+                        
+                    // console.log(newDate)
+                    // console.log(newtime)
+                }
+                console.log(JSON.stringify(this.blockApproved))
+                console.log(this.blockApproved.length)
             })
         },
         deleteMessage(value,id){
@@ -159,6 +199,7 @@ export default {
     },
     created(){
         this.getMeetingList()
+        this.meetingApproved()
         Echo.join('meetingcreate')
                 // .here()
                 // .joining()

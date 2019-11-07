@@ -27,6 +27,7 @@
                                                 <date-picker lang="en" input-name='date'
                                                 class="form-control"
                                                 :class="{ 'is-invalid': form.errors.has('date')}"
+                                                @panel-change="handlePanelChange(form.date, meeting.owner_id , meeting.invitee_id)"
                                                 v-model="form.date" valueType="format">
                                                 </date-picker>
                                                 <has-error :form="form" field="date"></has-error>
@@ -43,7 +44,7 @@
                                                 class="form-control"
                                                 type="time" v-model="time" value-type="format" format="HH:mm:ss" 
                                                 :class="{ 'is-invalid': form.errors.has('start_time') }"
-                                                :time-picker-options="timePickerOptions" placeholder="Select Time">
+                                                :time-picker-options="timePickerOptions" placeholder="Select Time" onkeydown="return false" :disabled='form.date < now'>
                                                 <!-- :class="{ 'is-invalid': form.errors.has('start_time') }"
                                                 :time-picker-options="timePickerOptions" placeholder="Select Time" -->
                                                 </date-picker>
@@ -62,6 +63,7 @@
 
 <script>
 import DatePicker from 'vue2-datepicker';
+import ModelMeeting from './ModelMeetingComponent';
 export default {
     name: 'ModelChangeTime',
     props: [
@@ -69,6 +71,7 @@ export default {
         'userId'
     ],
     components: { DatePicker },
+    mixins: [ModelMeeting],
     data() {
         return{
             time:"",

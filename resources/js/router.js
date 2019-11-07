@@ -3,6 +3,9 @@ import Router from 'vue-router';
 
 import MeetingPanding from './components/pages/PageMeetingPanding.vue'
 import MeetingConfirm from './components/pages/PageMeetingConfirm.vue'
+import UsersPage from './components/admin/pages/UsersPage.vue'
+import MeetingsPage from './components/admin/pages/MeetingsPage.vue'
+import DashboardPage from './components/admin/pages/DashboardPage.vue'
 
 Vue.use(Router);
 
@@ -19,9 +22,21 @@ export default new Router({
       path: '/meeting/confirm',
       name: 'MeetingConfirm',
       component: MeetingConfirm,
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
     },
+    {
+      path: '/admin',
+      name: 'DashboardPage',
+      component: DashboardPage,
+    },
+    {
+      path: '/admin/users',
+      name: 'UsersPage',
+      component: UsersPage,
+    },
+    {
+      path: '/admin/meeting',
+      name: 'MeetingsPage',
+      component: MeetingsPage,
+    }
   ],
 });
