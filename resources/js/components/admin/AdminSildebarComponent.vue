@@ -30,13 +30,12 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+            <router-link to="/admin/setting" class="nav-link">
+              <i class="fas fa-cogs"></i>
               <p>
                 Setting
-                <span class="right badge badge-danger">New</span>
               </p>
-            </a>
+            </router-link>
           </li>
     </div> 
 </template>

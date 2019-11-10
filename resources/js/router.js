@@ -3,9 +3,10 @@ import Router from 'vue-router';
 
 import MeetingPanding from './components/pages/PageMeetingPanding.vue'
 import MeetingConfirm from './components/pages/PageMeetingConfirm.vue'
+import DashboardPage from './components/admin/pages/DashboardPage.vue'
 import UsersPage from './components/admin/pages/UsersPage.vue'
 import MeetingsPage from './components/admin/pages/MeetingsPage.vue'
-import DashboardPage from './components/admin/pages/DashboardPage.vue'
+import SettingPage from './components/admin/pages/SettingPage.vue'
 
 Vue.use(Router);
 
@@ -37,6 +38,11 @@ export default new Router({
       path: '/admin/meeting',
       name: 'MeetingsPage',
       component: MeetingsPage,
+    },
+    {
+      path: '/admin/setting',
+      name: 'SettingPage',
+      component: SettingPage,
     }
   ],
 });

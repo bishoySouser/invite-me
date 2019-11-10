@@ -15,3 +15,14 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
     
 
+    mix.webpackConfig(webpack => {
+        return {
+            plugins: [
+                new webpack.ProvidePlugin({
+                    $: 'jquery',
+                    jQuery: 'jquery', 
+                    'window.jQuery': 'jquery',
+                })
+            ]
+        };
+    });
