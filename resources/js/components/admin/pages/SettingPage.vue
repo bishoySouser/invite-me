@@ -33,7 +33,7 @@
                         <div class="card-body">
                             
                                 <div class="input-group">
-                                    <input type="text" name="event-name" placeholder="Eneter event name ..." class="form-control" :disabled='disabled'>
+                                    <input type="text" v-model="eventName" name="event-name" placeholder="Eneter event name ..." class="form-control" :disabled='disabled'>
                                     <span class="input-group-append">
                                     <p class="btn btn-primary">Event Name</p>
                                     </span>
@@ -110,8 +110,8 @@
                             </form>
                             <ul class="todo-list mt-2" >
                                 <li class="text-center" v-for="item in dateList" :key="item.index">
-                                    <label>{{item}}</label>
-                                    <button @click="deleteItem(item)" type="button" class="btn btn-danger">
+                                    <label>{{item.event_date}}</label>
+                                    <button @click="deleteItem(item,item.id)" type="button" class="btn btn-danger">
                                         <i class="far fa-trash-alt"></i>
                                     </button>
                                 </li>
@@ -133,7 +133,7 @@
                         </div>
                         <div class="card-body">
                             <div class="col">
-                               <button type="button" :class="[buttonEdit ? 'btn btn-success' : 'btn btn-light']" @click="editToggle">Edit</button>
+                               <button type="button" :class="[buttonEdit ? 'btn btn-light' : 'btn btn-success']" @click="editToggle">Edit</button>
                                <button type="button" class='btn btn-outline-warning float-right' @click="saveChange">Save Change</button>
                             </div>
                         </div>
@@ -162,26 +162,43 @@ export default {
             timeTo: '',
             buttonEdit: false,
             disabled: false,
+            eventName:''
         }
     },
     methods:{
+        // TodoDates
         addItem(){
             var value = this.newDate && this.newDate.trim();
             if (!value) {
                 alert('Date is empty.');
                 return;
             }
-            if (this.dateList.includes(this.newDate)){
-                alert('the date is exist.');
-                return;
-            }
-            this.dateList.push(this.newDate)
+            axios.post('v1/event/date', {
+                event:1,
+                event_date:this.newDate
+            })
+            .then((res) => {
+                console.log(res)
+                this.dateList.push({
+                'event':1,
+                'event_date':this.newDate,
+            })
             this.newDate = ''
+            location.reload();  
+
+            })
+            
         },
-        deleteItem(todo){
-            const todoIndex = this.dateList.indexOf(todo)
-            this.dateList.splice(todoIndex, 1)
+        deleteItem(todo,id){
+            console.log(id)
+            axios.delete('v1/event/date/' + id)
+            .then((res) => {
+                const todoIndex = this.dateList.indexOf(todo)
+                this.dateList.splice(todoIndex, 1)
+            })
+            
         },
+        // End TodoDates
         editToggle(){
             this.buttonEdit = !this.buttonEdit
             this.disabled = !this.disabled
@@ -189,7 +206,21 @@ export default {
         },
         saveChange(){
             location.reload();
+        },
+        getEventInfo(){ /*Event Info (get)*/
+             axios.get('/v1/event')
+            .then((res) => {
+                this.eventName = res.data.event_info.name
+                this.timeFrom = res.data.event_info.event_start
+                this.timeTo = res.data.event_info.event_end
+                this.buttonEdit = res.data.event_info.edit
+                this.dateList = res.data.dates
+                console.log(res.data.event_info)
+            })
         }
+    },
+    created(){
+        this.getEventInfo()
     }
 }
 </script>

@@ -33,3 +33,9 @@ Route::get('v1/meeting/{owner}/{invitee}/{date?}','Api\MeetingController@meeting
 //messages
 Route::post('v1/message','Api\MessageController@store');
 Route::get('v1/message/one={one}/two={two}','Api\MessageController@showChat');
+
+//event
+Route::get('v1/event', 'Api\AdminController@eventInfo');
+Route::Post('v1/event/date', 'Api\AdminController@addEventDate'); //add new date for event
+Route::delete('v1/event/date/{id}','Api\AdminController@deleteEventDate'); //Delete event date (id)
+Route::put('v1/event','Api\AdminController@editEventInfo'); //Edit event

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEventsTable extends Migration
+class CreateEventDatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateEventsTable extends Migration
      */
     public function up()
     {
-        Schema::create('events', function (Blueprint $table) {
+        Schema::create('event_dates', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->time('event_start');
-            $table->time('event_end');
-            $table->boolean('edit');
+            $table->unsignedbigInteger('event')->nullable();
+            $table->foreign('event')
+                  ->references('id')
+                  ->on('events');
+            $table->date('event_date');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateEventsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('event_dates');
     }
 }

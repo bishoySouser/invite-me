@@ -2465,11 +2465,15 @@ __webpack_require__.r(__webpack_exports__);
       timeFrom: '',
       timeTo: '',
       buttonEdit: false,
-      disabled: false
+      disabled: false,
+      eventName: ''
     };
   },
   methods: {
+    // TodoDates
     addItem: function addItem() {
+      var _this = this;
+
       var value = this.newDate && this.newDate.trim();
 
       if (!value) {
@@ -2477,18 +2481,32 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      if (this.dateList.includes(this.newDate)) {
-        alert('the date is exist.');
-        return;
-      }
+      axios.post('v1/event/date', {
+        event: 1,
+        event_date: this.newDate
+      }).then(function (res) {
+        console.log(res);
 
-      this.dateList.push(this.newDate);
-      this.newDate = '';
+        _this.dateList.push({
+          'event': 1,
+          'event_date': _this.newDate
+        });
+
+        _this.newDate = '';
+        location.reload();
+      });
     },
-    deleteItem: function deleteItem(todo) {
-      var todoIndex = this.dateList.indexOf(todo);
-      this.dateList.splice(todoIndex, 1);
+    deleteItem: function deleteItem(todo, id) {
+      var _this2 = this;
+
+      console.log(id);
+      axios["delete"]('v1/event/date/' + id).then(function (res) {
+        var todoIndex = _this2.dateList.indexOf(todo);
+
+        _this2.dateList.splice(todoIndex, 1);
+      });
     },
+    // End TodoDates
     editToggle: function editToggle() {
       this.buttonEdit = !this.buttonEdit;
       this.disabled = !this.disabled;
@@ -2496,7 +2514,23 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveChange: function saveChange() {
       location.reload();
+    },
+    getEventInfo: function getEventInfo() {
+      var _this3 = this;
+
+      /*Event Info (get)*/
+      axios.get('/v1/event').then(function (res) {
+        _this3.eventName = res.data.event_info.name;
+        _this3.timeFrom = res.data.event_info.event_start;
+        _this3.timeTo = res.data.event_info.event_end;
+        _this3.buttonEdit = res.data.event_info.edit;
+        _this3.dateList = res.data.dates;
+        console.log(res.data.event_info);
+      });
     }
+  },
+  created: function created() {
+    this.getEventInfo();
   }
 });
 
@@ -79974,12 +80008,29 @@ var render = function() {
             _c("div", { staticClass: "card-body" }, [
               _c("div", { staticClass: "input-group" }, [
                 _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.eventName,
+                      expression: "eventName"
+                    }
+                  ],
                   staticClass: "form-control",
                   attrs: {
                     type: "text",
                     name: "event-name",
                     placeholder: "Eneter event name ...",
                     disabled: _vm.disabled
+                  },
+                  domProps: { value: _vm.eventName },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.eventName = $event.target.value
+                    }
                   }
                 }),
                 _vm._v(" "),
@@ -80109,7 +80160,7 @@ var render = function() {
                     "li",
                     { key: item.index, staticClass: "text-center" },
                     [
-                      _c("label", [_vm._v(_vm._s(item))]),
+                      _c("label", [_vm._v(_vm._s(item.event_date))]),
                       _vm._v(" "),
                       _c(
                         "button",
@@ -80118,7 +80169,7 @@ var render = function() {
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
-                              return _vm.deleteItem(item)
+                              return _vm.deleteItem(item, item.id)
                             }
                           }
                         },
@@ -80148,7 +80199,7 @@ var render = function() {
                     "button",
                     {
                       class: [
-                        _vm.buttonEdit ? "btn btn-success" : "btn btn-light"
+                        _vm.buttonEdit ? "btn btn-light" : "btn btn-success"
                       ],
                       attrs: { type: "button" },
                       on: { click: _vm.editToggle }
