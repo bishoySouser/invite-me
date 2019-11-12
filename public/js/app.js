@@ -2052,7 +2052,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'AdminSilder',
   data: function data() {
-    return {};
+    return {
+      activeTab: '1'
+    };
   }
 });
 
@@ -2201,6 +2203,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2212,19 +2218,11 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       title: 'Dashboard',
-      donutData: [{
-        label: 'Companies',
-        value: 50
-      }, {
-        label: 'Expeditors',
-        value: 70
-      }, {
-        label: 'Innovators',
-        value: 80
-      }, {
-        label: 'Visitors',
-        value: 100
-      }],
+      users: null,
+      meetings: null,
+      companies: 1,
+      expeditors: 1,
+      innovators: 1,
       data: [{
         day: "5-11-2019",
         Meeting: 2
@@ -2239,6 +2237,23 @@ __webpack_require__.r(__webpack_exports__);
         Meeting: 1
       }]
     };
+  },
+  methods: {
+    //Users and Meetings Count
+    uamCount: function uamCount() {
+      var _this = this;
+
+      axios.get('v1/info/uam').then(function (res) {
+        _this.users = res.data.data.UserAll;
+        _this.meetings = res.data.data.Meetings;
+        _this.companies = res.data.data.Companies;
+        _this.expeditors = res.data.data.Exhibitors;
+        _this.innovators = res.data.data.Innovators;
+      });
+    }
+  },
+  created: function created() {
+    this.uamCount();
   }
 });
 
@@ -2493,7 +2508,6 @@ __webpack_require__.r(__webpack_exports__);
         });
 
         _this.newDate = '';
-        location.reload();
       });
     },
     deleteItem: function deleteItem(todo, id) {
@@ -2509,11 +2523,20 @@ __webpack_require__.r(__webpack_exports__);
     // End TodoDates
     editToggle: function editToggle() {
       this.buttonEdit = !this.buttonEdit;
-      this.disabled = !this.disabled;
-      console.log('click editToggle');
+      this.disabled = !this.disabled; // console.log('click editToggle');
     },
     saveChange: function saveChange() {
-      location.reload();
+      axios.put('/v1/event', {
+        id: 1,
+        //1 because event table has one row .it has id => 1
+        name: this.eventName,
+        event_start: this.timeFrom,
+        event_end: this.timeTo,
+        edit: this.buttonEdit
+      }).then(function (res) {
+        // console.log(res)
+        location.reload();
+      });
     },
     getEventInfo: function getEventInfo() {
       var _this3 = this;
@@ -2524,9 +2547,13 @@ __webpack_require__.r(__webpack_exports__);
         _this3.timeFrom = res.data.event_info.event_start;
         _this3.timeTo = res.data.event_info.event_end;
         _this3.buttonEdit = res.data.event_info.edit;
-        _this3.dateList = res.data.dates;
-        console.log(res.data.event_info);
+        _this3.dateList = res.data.dates; // console.log(res.data.event_info)
       });
+    }
+  },
+  watch: {
+    buttonEdit: function buttonEdit(val) {
+      this.disabled = !val;
     }
   },
   created: function created() {
@@ -2545,6 +2572,28 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -79593,7 +79642,15 @@ var render = function() {
       [
         _c(
           "router-link",
-          { staticClass: "nav-link active", attrs: { to: "/admin" } },
+          {
+            staticClass: "nav-link",
+            attrs: { to: "/admin", activeClass: "nav-link active", exact: "" },
+            on: {
+              click: function($event) {
+                _vm.activeTab = "1"
+              }
+            }
+          },
           [
             _c("i", { staticClass: "nav-icon fas fa-tachometer-alt" }),
             _vm._v(" "),
@@ -79605,7 +79662,23 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("li", { staticClass: "nav-item has-treeview" }, [
-      _vm._m(0),
+      _c(
+        "a",
+        {
+          staticClass: "nav-link",
+          attrs: { href: "#" },
+          on: {
+            click: function($event) {
+              _vm.activeTab = "2"
+            }
+          }
+        },
+        [
+          _c("i", { staticClass: "fas fa-grip-horizontal" }),
+          _vm._v(" "),
+          _vm._m(0)
+        ]
+      ),
       _vm._v(" "),
       _c(
         "ul",
@@ -79618,11 +79691,23 @@ var render = function() {
               attrs: { tag: "li", to: "/admin/users" }
             },
             [
-              _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
-                _c("i", { staticClass: "far fa-circle" }),
-                _vm._v(" "),
-                _c("p", [_vm._v("User")])
-              ])
+              _c(
+                "a",
+                {
+                  staticClass: "nav-link ml-3",
+                  attrs: { href: "#", activeClass: "nav-item active" },
+                  on: {
+                    click: function($event) {
+                      _vm.activeTab = "2"
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "far fa-circle" }),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("User")])
+                ]
+              )
             ]
           ),
           _vm._v(" "),
@@ -79633,11 +79718,23 @@ var render = function() {
               attrs: { tag: "li", to: "/admin/meeting" }
             },
             [
-              _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
-                _c("i", { staticClass: "far fa-circle" }),
-                _vm._v(" "),
-                _c("p", [_vm._v("Meeting")])
-              ])
+              _c(
+                "a",
+                {
+                  staticClass: "nav-link ml-3",
+                  attrs: { href: "#", activeClass: "nav-item active" },
+                  on: {
+                    click: function($event) {
+                      _vm.activeTab = "3"
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "far fa-circle" }),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("Meeting")])
+                ]
+              )
             ]
           )
         ],
@@ -79651,7 +79748,15 @@ var render = function() {
       [
         _c(
           "router-link",
-          { staticClass: "nav-link", attrs: { to: "/admin/setting" } },
+          {
+            staticClass: "nav-link",
+            attrs: { to: "/admin/setting", activeClass: "nav-item active" },
+            on: {
+              click: function($event) {
+                _vm.activeTab = "4"
+              }
+            }
+          },
           [
             _c("i", { staticClass: "fas fa-cogs" }),
             _vm._v(" "),
@@ -79668,13 +79773,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
-      _c("i", { staticClass: "fas fa-grip-horizontal" }),
-      _vm._v(" "),
-      _c("p", [
-        _vm._v("\n             Category\n             "),
-        _c("i", { staticClass: "right fas fa-angle-left" })
-      ])
+    return _c("p", [
+      _vm._v("\n             Category\n             "),
+      _c("i", { staticClass: "right fas fa-angle-left" })
     ])
   }
 ]
@@ -79716,13 +79817,43 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _vm._m(1),
+    _c("section", { staticClass: "content counter" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-lg-6 col-6" }, [
+          _c("div", { staticClass: "small-box bg-info" }, [
+            _c("div", { staticClass: "inner" }, [
+              _c("h3", [_vm._v(_vm._s(_vm.users))]),
+              _vm._v(" "),
+              _c("p", [_vm._v("Users")])
+            ]),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _vm._m(2)
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-lg-6 col-6" }, [
+          _c("div", { staticClass: "small-box bg-success" }, [
+            _c("div", { staticClass: "inner" }, [
+              _c("h3", [_vm._v(_vm._s(_vm.meetings))]),
+              _vm._v(" "),
+              _c("p", [_vm._v("Meetings")])
+            ]),
+            _vm._v(" "),
+            _vm._m(3),
+            _vm._v(" "),
+            _vm._m(4)
+          ])
+        ])
+      ])
+    ]),
     _vm._v(" "),
     _c("section", { staticClass: "content analysis" }, [
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col-md-6" }, [
           _c("div", { staticClass: "card card-primary card-outline" }, [
-            _vm._m(2),
+            _vm._m(5),
             _vm._v(" "),
             _c(
               "div",
@@ -79731,7 +79862,11 @@ var render = function() {
                 _c("donut-chart", {
                   attrs: {
                     id: "donut",
-                    data: _vm.donutData,
+                    data: [
+                      { label: "Companies", value: _vm.companies },
+                      { label: "Expeditors", value: _vm.expeditors },
+                      { label: "Innovators", value: _vm.innovators }
+                    ],
                     colors: '[ "#FF6384", "#36A2EB", "#FFCE56", "#FFF000"]',
                     resize: "true"
                   }
@@ -79744,7 +79879,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "col-md-6" }, [
           _c("div", { staticClass: "card card-primary card-outline" }, [
-            _vm._m(3),
+            _vm._m(6),
             _vm._v(" "),
             _c(
               "div",
@@ -79785,61 +79920,43 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("section", { staticClass: "content counter" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-lg-6 col-6" }, [
-          _c("div", { staticClass: "small-box bg-info" }, [
-            _c("div", { staticClass: "inner" }, [
-              _c("h3", [_vm._v("150")]),
-              _vm._v(" "),
-              _c("p", [_vm._v("Users")])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "icon" }, [
-              _c("i", { staticClass: "fas fa-users" })
-            ]),
-            _vm._v(" "),
-            _c(
-              "a",
-              {
-                staticClass: "small-box-footer",
-                attrs: { href: "/admin/users" }
-              },
-              [
-                _vm._v("Edit "),
-                _c("i", { staticClass: "fas fa-arrow-circle-right" })
-              ]
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-lg-6 col-6" }, [
-          _c("div", { staticClass: "small-box bg-success" }, [
-            _c("div", { staticClass: "inner" }, [
-              _c("h3", [_vm._v("53")]),
-              _vm._v(" "),
-              _c("p", [_vm._v("Meetings")])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "icon" }, [
-              _c("i", { staticClass: "fas fa-handshake" })
-            ]),
-            _vm._v(" "),
-            _c(
-              "a",
-              {
-                staticClass: "small-box-footer",
-                attrs: { href: "/admin/meeting" }
-              },
-              [
-                _vm._v("Edit "),
-                _c("i", { staticClass: "fas fa-arrow-circle-right" })
-              ]
-            )
-          ])
-        ])
-      ])
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-users" })
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      { staticClass: "small-box-footer", attrs: { href: "/admin/users" } },
+      [
+        _vm._v("More info "),
+        _c("i", { staticClass: "fas fa-arrow-circle-right" })
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-handshake" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      { staticClass: "small-box-footer", attrs: { href: "/admin/meeting" } },
+      [
+        _vm._v("More info "),
+        _c("i", { staticClass: "fas fa-arrow-circle-right" })
+      ]
+    )
   },
   function() {
     var _vm = this
@@ -79847,7 +79964,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title" }, [
-        _c("i", { staticClass: "far fa-chart-bar" }),
+        _c("i", { staticClass: "fas fa-users" }),
         _vm._v("\n              Users\n            ")
       ]),
       _vm._v(" "),
@@ -79878,7 +79995,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title" }, [
-        _c("i", { staticClass: "far fa-chart-bar" }),
+        _c("i", { staticClass: "fas fa-handshake" }),
         _vm._v("\n              Meetings\n            ")
       ]),
       _vm._v(" "),
@@ -80166,7 +80283,7 @@ var render = function() {
                         "button",
                         {
                           staticClass: "btn btn-danger",
-                          attrs: { type: "button" },
+                          attrs: { type: "button", hidden: _vm.disabled },
                           on: {
                             click: function($event) {
                               return _vm.deleteItem(item, item.id)
@@ -80361,10 +80478,12 @@ var render = function() {
     _c("section", { staticClass: "content" }, [
       _c("div", { staticClass: "container-fluid" }, [
         _c("div", { staticClass: "row" }, [
-          _vm._v("\n\n            " + _vm._s(_vm.title) + "\n            ")
+          _vm._v("\n            " + _vm._s(_vm.title) + "\n            ")
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _vm._m(1)
   ])
 }
 var staticRenderFns = [
@@ -80374,6 +80493,33 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("li", { staticClass: "breadcrumb-item" }, [
       _c("a", { attrs: { href: "/admin" } }, [_vm._v("Admin")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("section", { staticClass: "content" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-6 col-sm-6" }, [
+          _c("div", { staticClass: "small-box bg-gradient-success" }, [
+            _c("div", { staticClass: "inner" }, [
+              _c("h3", [_vm._v("44")]),
+              _vm._v(" "),
+              _c("p", [_vm._v("User Registrations")])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "icon" }, [
+              _c("i", { staticClass: "fas fa-user-plus" })
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "small-box-footer", attrs: { href: "#" } }, [
+              _vm._v("\n            More info "),
+              _c("i", { staticClass: "fas fa-arrow-circle-right" })
+            ])
+          ])
+        ])
+      ])
     ])
   }
 ]

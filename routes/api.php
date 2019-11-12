@@ -39,3 +39,6 @@ Route::get('v1/event', 'Api\AdminController@eventInfo');
 Route::Post('v1/event/date', 'Api\AdminController@addEventDate'); //add new date for event
 Route::delete('v1/event/date/{id}','Api\AdminController@deleteEventDate'); //Delete event date (id)
 Route::put('v1/event','Api\AdminController@editEventInfo'); //Edit event
+
+//count users and meeting , uam = user and meeting 
+Route::get('v1/info/uam', 'Api\AdminController@uamInfo');

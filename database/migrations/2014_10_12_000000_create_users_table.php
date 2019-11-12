@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             // $table->string('company_name');
             // $table->string('country');
             // $table->string('sectory');
-            $table->enum('user_type',['Buyer','Exhibitors','Admin']);
+            $table->enum('user_type',['Company', 'Innovator', 'Exhibitor', 'Admin']);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

@@ -111,7 +111,7 @@
                             <ul class="todo-list mt-2" >
                                 <li class="text-center" v-for="item in dateList" :key="item.index">
                                     <label>{{item.event_date}}</label>
-                                    <button @click="deleteItem(item,item.id)" type="button" class="btn btn-danger">
+                                    <button @click="deleteItem(item,item.id)" type="button" class="btn btn-danger" :hidden="disabled">
                                         <i class="far fa-trash-alt"></i>
                                     </button>
                                 </li>
@@ -183,8 +183,7 @@ export default {
                 'event':1,
                 'event_date':this.newDate,
             })
-            this.newDate = ''
-            location.reload();  
+            this.newDate = '' 
 
             })
             
@@ -202,10 +201,20 @@ export default {
         editToggle(){
             this.buttonEdit = !this.buttonEdit
             this.disabled = !this.disabled
-            console.log('click editToggle');
+            // console.log('click editToggle');
         },
         saveChange(){
-            location.reload();
+            axios.put('/v1/event', {
+                id: 1, //1 because event table has one row .it has id => 1
+                name: this.eventName,
+                event_start: this.timeFrom,
+                event_end: this.timeTo,
+                edit: this.buttonEdit
+            })
+            .then((res) => {
+                // console.log(res)
+                location.reload()
+            })
         },
         getEventInfo(){ /*Event Info (get)*/
              axios.get('/v1/event')
@@ -215,8 +224,13 @@ export default {
                 this.timeTo = res.data.event_info.event_end
                 this.buttonEdit = res.data.event_info.edit
                 this.dateList = res.data.dates
-                console.log(res.data.event_info)
+                // console.log(res.data.event_info)
             })
+        }
+    },
+    watch:{
+        buttonEdit: function(val){
+            this.disabled = !val
         }
     },
     created(){

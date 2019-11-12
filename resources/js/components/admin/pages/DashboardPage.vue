@@ -20,14 +20,14 @@
                         <!-- small box -->
                         <div class="small-box bg-info">
                         <div class="inner">
-                            <h3>150</h3>
+                            <h3>{{users}}</h3>
 
                             <p>Users</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-users"></i>
                         </div>
-                        <a href="/admin/users" class="small-box-footer">Edit <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="/admin/users" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <!-- ./col -->
@@ -35,14 +35,14 @@
                         <!-- small box -->
                         <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>53</h3>
+                            <h3>{{meetings}}</h3>
 
                             <p>Meetings</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-handshake"></i>
                         </div>
-                        <a href="/admin/meeting" class="small-box-footer">Edit <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="/admin/meeting" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
 
@@ -62,7 +62,7 @@
             <div class="card card-primary card-outline">
               <div class="card-header">
                 <h3 class="card-title">
-                  <i class="far fa-chart-bar"></i>
+                  <i class="fas fa-users"></i>
                   Users
                 </h3>
 
@@ -76,7 +76,11 @@
               <div class="card-body">
                 <donut-chart 
                   id="donut" 
-                  :data="donutData" 
+                  :data=" [
+                    {label: 'Companies', value: companies},
+                    { label: 'Expeditors', value: expeditors},
+                    { label: 'Innovators', value: innovators}
+                  ]" 
                   colors='[ "#FF6384", "#36A2EB", "#FFCE56", "#FFF000"]' 
                   resize="true">
                 </donut-chart>
@@ -93,7 +97,7 @@
             <div class="card card-primary card-outline">
               <div class="card-header">
                 <h3 class="card-title">
-                  <i class="far fa-chart-bar"></i>
+                  <i class="fas fa-handshake"></i>
                   Meetings
                 </h3>
 
@@ -139,12 +143,11 @@ export default {
     data() {
         return{
             title: 'Dashboard',
-            donutData: [
-              { label: 'Companies', value: 50 },
-              { label: 'Expeditors', value: 70 },
-              { label: 'Innovators', value: 80 },
-              { label: 'Visitors', value: 100 },
-            ],
+            users: null,
+            meetings: null,
+            companies: 1,
+            expeditors: 1,
+            innovators: 1,
             data: [
               { day: "5-11-2019", Meeting: 2 },
               { day: "6-11-2019", Meeting: 3 },
@@ -152,6 +155,22 @@ export default {
               { day: "8-11-2019", Meeting: 1 }
             ]
         }
+    },
+    methods:{
+      //Users and Meetings Count
+      uamCount(){
+         axios.get('v1/info/uam')
+            .then((res) => {
+                this.users = res.data.data.UserAll
+                this.meetings = res.data.data.Meetings
+                this.companies = res.data.data.Companies
+                this.expeditors = res.data.data.Exhibitors
+                this.innovators = res.data.data.Innovators
+            })
+      }
+    },
+    created(){
+      this.uamCount();
     }
 }
 </script>

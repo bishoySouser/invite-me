@@ -21,14 +21,21 @@ class UserTableSeeder extends Seeder
         DB::table('users')->insert([
             'first_name' => 'test',
             'email' => 'test@test.com',
-            'user_type' => 'Buyer',
+            'user_type' => 'Exhibitor',
             'password' => bcrypt('123456789')
         ]);
 
         DB::table('users')->insert([
             'first_name' => 'Bishoy',
             'email' => 'bishoysouser@gmail.com',
-            'user_type' => 'Exhibitors',
+            'user_type' => 'Innovator',
+            'password' => bcrypt('123456789')
+        ]);
+
+        DB::table('users')->insert([
+            'first_name' => 'user',
+            'email' => 'userr@gmail.com',
+            'user_type' => 'Company',
             'password' => bcrypt('123456789')
         ]);
     }
