@@ -12,6 +12,51 @@ use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
+    public function useradd(Request $request){
+        //validate
+        $this->validate($request,[
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required',
+            'user_type' => 'required',
+        ]);
+        //add password
+        $first_name = $request->input('first_name');
+        $last_name = $request->input('last_name');
+        $email = $request->input('email');
+        $user_type = $request->input('user_type');
+        $password = bcrypt($first_name.$user_type);
+
+        $dublicteUser = User::where('email', '=', $email)->count();
+        if($dublicteUser > 0){
+            $response = [
+                'msg' => 'User is already registered',
+            ];
+            return response()->json($response, 201);
+        }
+        //insert user
+        $user = new User([
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'email' => $email,
+            'user_type' => $user_type,
+            'password' => $password
+        ]);
+        //response
+        if ($user->save()) {
+            $response = [
+                'msg' => 'User created',
+                'user' => $user
+            ];
+            return response()->json($response, 201);
+        }
+
+        $response = [
+            'msg' => 'An error occurred'
+        ];
+
+        return response()->json($response, 404);
+    }
     public function uamInfo(){ //users and meetings count
         $usersCount = User::where('user_type', '!=', 'Admin')->count(); //Users All
         $companysCount = User::where('user_type', '=', 'Company')->count(); //Companies All

@@ -3,8 +3,16 @@
 @section('content')
     <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+      </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      
       <!-- Messages Dropdown Menu -->
       <li class="nav-item dropdown" aria-labelledby="navbarDropdown">
           <a class="nav-link" href="{{ route('logout') }}"
@@ -17,8 +25,10 @@
               @csrf
           </form>
       </li>
+
     </ul>
   </nav>
+
 
    <!-- Main Sidebar Container -->
    <aside class="main-sidebar sidebar-dark-primary elevation-4">

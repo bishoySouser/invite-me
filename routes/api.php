@@ -42,3 +42,5 @@ Route::put('v1/event','Api\AdminController@editEventInfo'); //Edit event
 
 //count users and meeting , uam = user and meeting 
 Route::get('v1/info/uam', 'Api\AdminController@uamInfo');
+//add admin
+Route::post('v1/meeting/admin/userAdd', 'Api\AdminController@useradd');
