@@ -7,6 +7,9 @@ use App\EventDate;
 use App\Meeting;
 use App\User;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendMailable;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -25,14 +28,15 @@ class AdminController extends Controller
         $last_name = $request->input('last_name');
         $email = $request->input('email');
         $user_type = $request->input('user_type');
-        $password = bcrypt($first_name.$user_type);
+        $passUser = bcrypt($first_name);
+        $password = bcrypt($passUser);
 
         $dublicteUser = User::where('email', '=', $email)->count();
         if($dublicteUser > 0){
             $response = [
-                'msg' => 'User is already registered',
+                'error' => 'User is already registered',
             ];
-            return response()->json($response, 201);
+            return response()->json($response, 202);
         }
         //insert user
         $user = new User([
@@ -42,6 +46,7 @@ class AdminController extends Controller
             'user_type' => $user_type,
             'password' => $password
         ]);
+        Mail::to($email)->send(new SendMailable($first_name,$last_name,$email,$passUser));
         //response
         if ($user->save()) {
             $response = [

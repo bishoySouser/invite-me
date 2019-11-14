@@ -2572,7 +2572,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
+/* WEBPACK VAR INJECTION */(function($) {//
 //
 //
 //
@@ -2704,35 +2704,44 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       title: 'Users',
-      formRegister: {
-        firstName: '',
-        lastName: '',
+      formRegister: new Form({
+        first_name: '',
+        last_name: '',
         email: '',
-        userType: 'Innovator'
-      }
+        user_type: 'Innovator'
+      })
     };
   },
   methods: {
+    reset: function reset() {
+      Object.assign(this.$data, this.$options.data());
+    },
     addUser: function addUser() {
       var _this = this;
 
-      axios.post('v1/meeting/admin/userAdd', {
-        first_name: this.formRegister.firstName,
-        last_name: this.formRegister.lastName,
-        email: this.formRegister.email,
-        user_type: this.formRegister.userType
-      }).then(function (res) {
-        if (res.data.msg = 'User is already registered') {
-          alert('User is already registered');
-          _this.formRegister.email = '';
+      this.formRegister.post('v1/meeting/admin/userAdd').then(function (res) {
+        if (res.status == 202) {
+          toast.fire({
+            type: 'error',
+            title: 'Error!',
+            text: 'User is already registered',
+            confirmButtonText: 'Cool'
+          });
         } else {
-          alert('User add');
-          formRegister.reset();
+          $('#UserRegistration').modal('hide');
+
+          _this.formRegister.reset();
+
+          toast.fire({
+            type: 'success',
+            title: res.data.msg
+          }); // console.log(res);
         }
       });
     }
   }
 });
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
 
 /***/ }),
 
@@ -80629,8 +80638,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.formRegister.firstName,
-                              expression: "formRegister.firstName"
+                              value: _vm.formRegister.first_name,
+                              expression: "formRegister.first_name"
                             }
                           ],
                           staticClass: "form-control",
@@ -80639,7 +80648,7 @@ var render = function() {
                             id: "inputFirstName",
                             placeholder: "First name"
                           },
-                          domProps: { value: _vm.formRegister.firstName },
+                          domProps: { value: _vm.formRegister.first_name },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -80647,14 +80656,14 @@ var render = function() {
                               }
                               _vm.$set(
                                 _vm.formRegister,
-                                "firstName",
+                                "first_name",
                                 $event.target.value
                               )
                             }
                           }
                         }),
                         _vm._v(" "),
-                        _vm.formRegister.firstName.length < 2
+                        _vm.formRegister.first_name.length < 2
                           ? _c("p", { staticClass: "text-danger pb-2" }, [
                               _vm._v(
                                 "\n                      first name is requried\n                    "
@@ -80673,8 +80682,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.formRegister.lastName,
-                              expression: "formRegister.lastName"
+                              value: _vm.formRegister.last_name,
+                              expression: "formRegister.last_name"
                             }
                           ],
                           staticClass: "form-control",
@@ -80683,7 +80692,7 @@ var render = function() {
                             id: "inputLastName",
                             placeholder: "Last name"
                           },
-                          domProps: { value: _vm.formRegister.lastName },
+                          domProps: { value: _vm.formRegister.last_name },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -80691,14 +80700,14 @@ var render = function() {
                               }
                               _vm.$set(
                                 _vm.formRegister,
-                                "lastName",
+                                "last_name",
                                 $event.target.value
                               )
                             }
                           }
                         }),
                         _vm._v(" "),
-                        _vm.formRegister.lastName.length < 2
+                        _vm.formRegister.last_name.length < 2
                           ? _c("p", { staticClass: "text-danger pb-2" }, [
                               _vm._v(
                                 "\n                      last name is requried\n                    "
@@ -80765,8 +80774,8 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.formRegister.userType,
-                                expression: "formRegister.userType"
+                                value: _vm.formRegister.user_type,
+                                expression: "formRegister.user_type"
                               }
                             ],
                             staticClass: "form-control",
@@ -80783,7 +80792,7 @@ var render = function() {
                                   })
                                 _vm.$set(
                                   _vm.formRegister,
-                                  "userType",
+                                  "user_type",
                                   $event.target.multiple
                                     ? $$selectedVal
                                     : $$selectedVal[0]
@@ -80822,8 +80831,8 @@ var render = function() {
                     attrs: {
                       type: "button",
                       disabled:
-                        (_vm.formRegister.firstName.length &&
-                          _vm.formRegister.lastName.length) < 2 ||
+                        (_vm.formRegister.first_name.length &&
+                          _vm.formRegister.last_name.length) < 2 ||
                         _vm.formRegister.email.indexOf("@") < 0
                     },
                     on: { click: _vm.addUser }

@@ -78,15 +78,15 @@
                     <div class="form-row">
                       <div class="form-group col-md-6">
                         <label for="inputFirstName">First name</label>
-                        <input type="text" v-model="formRegister.firstName" class="form-control" id="inputFirstName" placeholder="First name">
-                        <p class="text-danger pb-2" v-if="formRegister.firstName.length < 2">
+                        <input type="text" v-model="formRegister.first_name" class="form-control" id="inputFirstName" placeholder="First name">
+                        <p class="text-danger pb-2" v-if="formRegister.first_name.length < 2">
                           first name is requried
                         </p>
                       </div>
                       <div class="form-group col-md-6">
                         <label for="inputLastName">Last name</label>
-                        <input type="text" v-model="formRegister.lastName" class="form-control"  id="inputLastName" placeholder="Last name">
-                        <p class="text-danger pb-2" v-if="formRegister.lastName.length < 2">
+                        <input type="text" v-model="formRegister.last_name" class="form-control"  id="inputLastName" placeholder="Last name">
+                        <p class="text-danger pb-2" v-if="formRegister.last_name.length < 2">
                           last name is requried
                         </p>
                       </div>
@@ -102,7 +102,7 @@
                       </div>
                       <div class="form-group col-md-4">
                         <label for="inputUserIs">User is </label>
-                        <select id="inputUserIs" class="form-control" v-model="formRegister.userType">
+                        <select id="inputUserIs" class="form-control" v-model="formRegister.user_type">
                           <option>Company</option>
                           <option>Exhibitor</option>
                           <option>Innovator</option>
@@ -117,7 +117,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" @click="addUser" :disabled="(formRegister.firstName.length && formRegister.lastName.length) < 2 || formRegister.email.indexOf('@') < 0">Add user</button>
+                <button type="button" class="btn btn-primary" @click="addUser" :disabled="(formRegister.first_name.length && formRegister.last_name.length) < 2 || formRegister.email.indexOf('@') < 0">Add user</button>
               </div>
             </div>
           </div>
@@ -131,31 +131,41 @@ export default {
     data() {
         return{
             title: 'Users',
-            formRegister: {
-                firstName: '',
-                lastName: '',
+            formRegister: new Form({
+                first_name: '',
+                last_name: '',
                 email: '',
-                userType: 'Innovator',
-            }, 
+                user_type: 'Innovator',
+            }), 
         }
     },
     methods:{
+      reset () {
+            Object.assign(this.$data, this.$options.data());
+        },
       addUser(){
-        axios.post('v1/meeting/admin/userAdd', {
-            first_name: this.formRegister.firstName,
-            last_name: this.formRegister.lastName,
-            email: this.formRegister.email,
-            user_type: this.formRegister.userType,
-        })
+        this.formRegister.post('v1/meeting/admin/userAdd')
         .then((res) => {
-          if(res.data.msg = 'User is already registered'){
-            alert('User is already registered')
-            this.formRegister.email = ''
+         
+          if(res.status == 202){
+            toast.fire({
+              type: 'error',
+              title: 'Error!',
+              text: 'User is already registered',
+              confirmButtonText: 'Cool'
+            })
           }else{
-            alert('User add');
-            formRegister.reset()
+            $('#UserRegistration').modal('hide')
+            this.formRegister.reset();
+            toast.fire({
+              type: 'success',
+              title: res.data.msg
+            })
+            // console.log(res);
           }
+          
         })
+        
       }
     },
     
