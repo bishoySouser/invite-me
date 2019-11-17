@@ -1,6 +1,6 @@
 <template>
     <div id='users-page'>
-        
+
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0 text-dark">{{title}}</h1>
@@ -20,11 +20,11 @@
             </div>
         </section>
         
-        <div class="content">
+        <nav class="navbar sticky-top" style="background: #f4f6f9; flex-flow: row-reverse;">
           <div class="row my-2">
-            <form class="form-inline ml-3 pr-2 mx-auto">
+            <form class="form-inline ml-3 pr-2">
               <div class="input-group input-group-sm">
-                <input class="form-control form-control-navbar rounded-pill" type="search" placeholder="Search users" aria-label="Search">
+                <input class="form-control form-control-navbar rounded-pill" v-model="userSearch" type="search" placeholder="Search by email" aria-label="Search">
               </div>
             </form>
             
@@ -32,33 +32,60 @@
                 User Registrations
             </button>
           </div>
-        </div>
+        </nav>
+
         <div class="users-list">
           <div class="row">
 
-            <table class="table">
+            <table class="table text-center">
               <thead class="thead-dark">
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">User name</th>
                   <th scope="col">Email</th>
-                  <th scope="col">User type</th>
-                  <th scope="col">Meeting</th>
+                  <th scope="col">Type</th>
                   <th scope="col">Handling</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>@mdo</td>
-                  <td>@mdo</td>
+                <!-- loading -->
+                  <loading :active.sync="isLoading" 
+                  :can-cancel="true" 
+                  :on-cancel="onCancel"
+                  :is-full-page="fullPage"></loading>
+
+                <tr v-for='(user, index) in filteredList' :key="user.num">
+                  <th scope="row">{{index+1}}</th>
+                  <td>{{user.first_name+' '+user.last_name}}</td>
+                  <td>{{user.email}}</td>
+                  <td>{{user.user_type}}</td>
+                  <td>
+                    <button class="btn btn-danger" data-toggle="modal" :data-target="'#model'+user.id">Delete</button>
+                  </td>
+                  <!-- Modal delete -->
+                  <div class="modal fade" :id="'model'+user.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Delete User</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          Do you need "{{user.first_name+' '+user.last_name}}"
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                          <button type="button" class="btn btn-danger" @click="deleteUser(user.id)">Yes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </tr>
               </tbody>
             </table>
-
+            
           </div>
         </div>
 
@@ -74,6 +101,11 @@
               </div>
               <div class="modal-body">
                 <div class="container-fluid">
+                  <!-- loading -->
+                  <loading :active.sync="isLoading" 
+                  :can-cancel="true" 
+                  :on-cancel="onCancel"
+                  :is-full-page="fullPage"></loading>
                   <form>
                     <div class="form-row">
                       <div class="form-group col-md-6">
@@ -126,8 +158,15 @@
 </template>
 
 <script>
+// Import component
+import Loading from 'vue-loading-overlay';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
 export default {
     name:"UsersPage",
+    components: {
+            Loading
+        },
     data() {
         return{
             title: 'Users',
@@ -136,18 +175,45 @@ export default {
                 last_name: '',
                 email: '',
                 user_type: 'Innovator',
-            }), 
+            }),
+            users:[],
+            userSearch:'',
+            //loading
+            isLoading: false,
+            fullPage: true
+        }
+    },
+    computed: {
+        filteredList() {
+            return this.users.filter(user => {
+                return user.email.toLowerCase().includes(this.userSearch.toLowerCase())
+            })
         }
     },
     methods:{
       reset () {
             Object.assign(this.$data, this.$options.data());
         },
-      addUser(){
-        this.formRegister.post('v1/meeting/admin/userAdd')
+      getUsersList(){
+        axios.get('v1/admin/usersList',this.isLoading = true)
         .then((res) => {
-         
+          // simulate AJAX
+                setTimeout(() => {
+                 this.isLoading = false
+                },300)
+          this.users = res.data.list
+          console.log(res.data.list);
+        })
+      },
+      addUser(){
+        this.formRegister.post('v1/meeting/admin/userAdd',this.isLoading = true)
+        .then((res) => {
+                // simulate AJAX
+                setTimeout(() => {
+                 this.isLoading = false
+                },300)
           if(res.status == 202){
+            this.formRegister.reset();
             toast.fire({
               type: 'error',
               title: 'Error!',
@@ -161,13 +227,28 @@ export default {
               type: 'success',
               title: res.data.msg
             })
+            location.reload();
             // console.log(res);
           }
           
         })
         
-      }
+      },
+      deleteUser(id){
+        console.log(id)
+        axios.delete('v1/admin/user/' + id)
+            .then((res) => {
+                $('#model'+id).modal('hide')
+                location.reload();
+            })
+      },
+      onCancel() { //loading pluging
+              console.log('User cancelled the loader.')
+            }
     },
+    created(){
+      this.getUsersList()
+    }
     
       
   

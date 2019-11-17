@@ -36,11 +36,13 @@ Route::get('v1/message/one={one}/two={two}','Api\MessageController@showChat');
 
 //event
 Route::get('v1/event', 'Api\AdminController@eventInfo');
-Route::Post('v1/event/date', 'Api\AdminController@addEventDate'); //add new date for event
+Route::post('v1/event/date', 'Api\AdminController@addEventDate'); //add new date for event
 Route::delete('v1/event/date/{id}','Api\AdminController@deleteEventDate'); //Delete event date (id)
 Route::put('v1/event','Api\AdminController@editEventInfo'); //Edit event
 
 //count users and meeting , uam = user and meeting 
 Route::get('v1/info/uam', 'Api\AdminController@uamInfo');
-//add admin
-Route::post('v1/meeting/admin/userAdd', 'Api\AdminController@useradd');
+
+Route::post('v1/meeting/admin/userAdd', 'Api\AdminController@useradd');//add admin
+Route::get('v1/admin/usersList', 'Api\AdminController@usersList');//get users list
+Route::delete('v1/admin/user/{id}', 'Api\AdminController@deleteUser');//delete User

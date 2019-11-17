@@ -74,6 +74,10 @@
                 </div>
               </div>
               <div class="card-body">
+                <loading :active.sync="isLoading" 
+                :can-cancel="true" 
+                :on-cancel="onCancel"
+                :is-full-page="fullPage"></loading>
                 <donut-chart 
                   id="donut" 
                   :data=" [
@@ -135,10 +139,14 @@
 <script>
 import Vue from 'vue'
 import { DonutChart, BarChart } from 'vue-morris'
+// Import component
+import Loading from 'vue-loading-overlay';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
 export default {
     name:"DashboardPage",
     components: {
-    DonutChart, BarChart
+    DonutChart, BarChart, Loading
     },
     data() {
         return{
@@ -153,7 +161,9 @@ export default {
               { day: "6-11-2019", Meeting: 3 },
               { day: "7-11-2019", Meeting: 2 },
               { day: "8-11-2019", Meeting: 1 }
-            ]
+            ],
+            isLoading: false,
+            fullPage: true
         }
     },
     methods:{
@@ -167,10 +177,21 @@ export default {
                 this.expeditors = res.data.data.Exhibitors
                 this.innovators = res.data.data.Innovators
             })
+      },
+      loadinglazy() {
+          this.isLoading = true;
+          // simulate AJAX
+          setTimeout(() => {
+            this.isLoading = false
+          },500)
+      },
+      onCancel() {
+        console.log('User cancelled the loader.')
       }
     },
     created(){
       this.uamCount();
+      this.loadinglazy()
     }
 }
 </script>

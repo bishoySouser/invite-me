@@ -121,6 +121,35 @@ class AdminController extends Controller
         return response()->json($response, 404);
     }
 
+    public function usersList(){ //get users list
+        $list =  User::where('user_type', '!=', 'Admin')->get();
+        $response = [
+            'msg' => 'Users List',
+            'list' => $list
+        ];
+
+        return response()->json($response, 200);
+        // return 'edit event info';
+    }
+
+    public function deleteUser($id){ //delete user
+        // query: a user has this ($id)
+        $user = User::find($id);
+        if(!$user){
+            return response()->json(['msg' => 'user not exist.'], 202);
+        }
+        //not delete admin
+        if($user->user_type === 'Admin'){
+            return response()->json(['msg' => 'user not exist.'], 202);
+        }
+
+        $user->delete();
+        $response = [
+            'msg' => 'The user deleted.'
+        ];
+        return response()->json($response, 200);
+    }
+
     public function editEventInfo(Request $request){
         $name = $request->input('name');
         $start = $request->input('event_start');
