@@ -2296,6 +2296,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue2-datepicker */ "./node_modules/vue2-datepicker/lib/index.js");
+/* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2322,12 +2324,144 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "MeetingsPage",
+  components: {
+    DatePicker: vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default.a
+  },
   data: function data() {
     return {
-      title: 'Meetings'
+      title: 'Meetings',
+      meetingNum: Date.now() + Math.floor(Math.random() * 101),
+      form: new Form({
+        personeOne: 'choose',
+        personeTwo: 'choose',
+        meetingDate: 'choose',
+        meetingTime: 'choose',
+        meetingStatus: 'approved'
+      }),
+      timePickerOptions: {
+        start: '9:00',
+        step: '00:30',
+        end: '22:00'
+      },
+      users: [],
+      dates: []
     };
+  },
+  methods: {
+    meetingCreate: function meetingCreate() {
+      console.log('create meeting');
+    },
+    meetingInfo: function meetingInfo() {
+      var _this = this;
+
+      axios.get('v1/admin/infoMeeting').then(function (res) {
+        _this.users = res.data.users;
+        _this.dates = res.data.dates;
+        _this.timePickerOptions.start = res.data.event.event_start;
+        _this.timePickerOptions.end = res.data.event.event_end; // console.log(res.data)
+      });
+    }
+  },
+  created: function created() {
+    this.meetingInfo();
+    document.title = this.title;
   }
 });
 
@@ -2762,7 +2896,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 // Import component
  // Import stylesheet
 
@@ -2798,9 +2931,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    reset: function reset() {
-      Object.assign(this.$data, this.$options.data());
-    },
     getUsersList: function getUsersList() {
       var _this2 = this;
 
@@ -2858,6 +2988,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.getUsersList();
+    document.title = this.title;
   }
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
@@ -10061,6 +10192,25 @@ function isnan (val) {
 }
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "form > div:nth-child(3) > div:nth-child(2) > div[data-v-debe9446] {\n  padding: 0px;\n}", ""]);
+
+// exports
+
 
 /***/ }),
 
@@ -74943,6 +75093,36 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../../node_modules/css-loader!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--7-2!../../../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../../../node_modules/vue-loader/lib??vue-loader-options!./MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true& */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pages/SettingPage.vue?vue&type=style&index=0&id=b6db4c4e&lang=scss&scoped=true&":
 /*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pages/SettingPage.vue?vue&type=style&index=0&id=b6db4c4e&lang=scss&scoped=true& ***!
@@ -80331,7 +80511,359 @@ var render = function() {
           _vm._v("\n\n            " + _vm._s(_vm.title) + "\n            ")
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _vm._m(1),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "meetingCreate",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "UserRegistration",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "container-fluid" }, [
+                  _c("form", [
+                    _c("div", { staticClass: "form-row" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "form-group col-md-12",
+                          staticStyle: { display: "contents" }
+                        },
+                        [
+                          _c("label", { attrs: { for: "meetingNumber" } }, [
+                            _vm._v("Meeting Number: ")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "p",
+                            {
+                              staticClass: "px-2",
+                              staticStyle: { "font-family": "cursive" },
+                              attrs: { id: "meetingNumber" }
+                            },
+                            [
+                              _vm._v(
+                                "\n                      " +
+                                  _vm._s(_vm.meetingNum) +
+                                  "\n                    "
+                              )
+                            ]
+                          )
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-row" }, [
+                      _c("div", { staticClass: "form-group col-md-6" }, [
+                        _c("label", { attrs: { for: "peroneOne" } }, [
+                          _vm._v("Persone one")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.personeOne,
+                                expression: "form.personeOne"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { id: "peroneOne" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.form,
+                                  "personeOne",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { disabled: "" } }, [
+                              _vm._v("choose")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.users, function(user) {
+                              return _c(
+                                "option",
+                                {
+                                  key: user.index,
+                                  attrs: {
+                                    hidden: _vm.form.personeTwo == user.id
+                                  },
+                                  domProps: { value: user.id }
+                                },
+                                [_vm._v(_vm._s(user.email))]
+                              )
+                            })
+                          ],
+                          2
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group col-md-6" }, [
+                        _c("label", { attrs: { for: "personeTwo" } }, [
+                          _vm._v("Persone two")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.personeTwo,
+                                expression: "form.personeTwo"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { id: "personeTwo" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.form,
+                                  "personeTwo",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { disabled: "" } }, [
+                              _vm._v("choose")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.users, function(user) {
+                              return _c(
+                                "option",
+                                {
+                                  key: user.index,
+                                  attrs: {
+                                    hidden: _vm.form.personeOne == user.id
+                                  },
+                                  domProps: { value: user.id }
+                                },
+                                [_vm._v(_vm._s(user.email))]
+                              )
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-row" }, [
+                      _c("div", { staticClass: "form-group col-md-6" }, [
+                        _c("label", { attrs: { for: "dateMeeting" } }, [
+                          _vm._v("Date")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.meetingDate,
+                                expression: "form.meetingDate"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { id: "dateMeeting" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.form,
+                                  "meetingDate",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { disabled: "" } }, [
+                              _vm._v("choose")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.dates, function(date) {
+                              return _c("option", { key: date.index }, [
+                                _vm._v(_vm._s(date.event_date))
+                              ])
+                            })
+                          ],
+                          2
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "form-group col-md-6" },
+                        [
+                          _c("label", { attrs: { for: "meetingStatus" } }, [
+                            _vm._v("Time")
+                          ]),
+                          _vm._v(" "),
+                          _c("date-picker", {
+                            staticClass: "form-control",
+                            attrs: {
+                              lang: "en",
+                              "input-name": "start_time",
+                              type: "time",
+                              "value-type": "format",
+                              format: "HH:mm:ss",
+                              "time-picker-options": _vm.timePickerOptions,
+                              placeholder: "Select Time"
+                            },
+                            model: {
+                              value: _vm.form.meetingTime,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "meetingTime", $$v)
+                              },
+                              expression: "form.meetingTime"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-row" }, [
+                      _c("div", { staticClass: "form-group col-md-12" }, [
+                        _c("label", { attrs: { for: "meetingStatus" } }, [
+                          _vm._v("Status")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.meetingStatus,
+                                expression: "form.meetingStatus"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { id: "meetingStatus", disabled: "" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.form,
+                                  "meetingStatus",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [_c("option", [_vm._v("approved")])]
+                        )
+                      ])
+                    ])
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("Close")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      type: "button",
+                      disabled:
+                        _vm.form.personeOne == "choose" ||
+                        _vm.form.personeTwo == "choose" ||
+                        _vm.form.meetingDate == "choose"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.meetingCreate()
+                      }
+                    }
+                  },
+                  [_vm._v("Create")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -80341,6 +80873,67 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("li", { staticClass: "breadcrumb-item" }, [
       _c("a", { attrs: { href: "/admin" } }, [_vm._v("Admin")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "nav",
+      {
+        staticClass: "navbar sticky-top",
+        staticStyle: { background: "#f4f6f9" }
+      },
+      [
+        _c("form", { staticClass: "form-inline ml-3 pr-2" }, [
+          _c("div", { staticClass: "input-group input-group-sm" }, [
+            _c("input", {
+              staticClass: "form-control form-control-navbar rounded-pill",
+              attrs: {
+                type: "search",
+                placeholder: "Search by email",
+                "aria-label": "Search"
+              }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success float-right",
+            staticStyle: { "flex-flow": "row-reverse" },
+            attrs: { "data-toggle": "modal", "data-target": "#meetingCreate" }
+          },
+          [_vm._v("\n            Create Meeting\n        ")]
+        )
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLongTitle" } },
+        [_vm._v("Meeting create")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
     ])
   }
 ]
@@ -80753,52 +81346,51 @@ var render = function() {
       "nav",
       {
         staticClass: "navbar sticky-top",
-        staticStyle: { background: "#f4f6f9", "flex-flow": "row-reverse" }
+        staticStyle: { background: "#f4f6f9" }
       },
       [
-        _c("div", { staticClass: "row my-2" }, [
-          _c("form", { staticClass: "form-inline ml-3 pr-2" }, [
-            _c("div", { staticClass: "input-group input-group-sm" }, [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.userSearch,
-                    expression: "userSearch"
-                  }
-                ],
-                staticClass: "form-control form-control-navbar rounded-pill",
-                attrs: {
-                  type: "search",
-                  placeholder: "Search by email",
-                  "aria-label": "Search"
-                },
-                domProps: { value: _vm.userSearch },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.userSearch = $event.target.value
-                  }
+        _c("form", { staticClass: "form-inline ml-3 pr-2" }, [
+          _c("div", { staticClass: "input-group input-group-sm" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.userSearch,
+                  expression: "userSearch"
                 }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-success",
+              ],
+              staticClass: "form-control form-control-navbar rounded-pill",
               attrs: {
-                "data-toggle": "modal",
-                "data-target": "#UserRegistration"
+                type: "search",
+                placeholder: "Search by email",
+                "aria-label": "Search"
+              },
+              domProps: { value: _vm.userSearch },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.userSearch = $event.target.value
+                }
               }
-            },
-            [_vm._v("\n            User Registrations\n        ")]
-          )
-        ])
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success float-right",
+            staticStyle: { "flex-flow": "row-reverse" },
+            attrs: {
+              "data-toggle": "modal",
+              "data-target": "#UserRegistration"
+            }
+          },
+          [_vm._v("\n            User Registrations\n        ")]
+        )
       ]
     ),
     _vm._v(" "),
@@ -80877,11 +81469,11 @@ var render = function() {
                             _vm._v(" "),
                             _c("div", { staticClass: "modal-body" }, [
                               _vm._v(
-                                '\n                      Do you need "' +
+                                '\n                      Delete "' +
                                   _vm._s(
                                     user.first_name + " " + user.last_name
                                   ) +
-                                  '"\n                    '
+                                  '" ?\n                    '
                               )
                             ]),
                             _vm._v(" "),
@@ -98125,7 +98717,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MeetingsPage_vue_vue_type_template_id_debe9446_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MeetingsPage.vue?vue&type=template&id=debe9446&scoped=true& */ "./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=template&id=debe9446&scoped=true&");
 /* harmony import */ var _MeetingsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MeetingsPage.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _MeetingsPage_vue_vue_type_style_index_0_id_debe9446_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true& */ "./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -98133,7 +98727,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _MeetingsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _MeetingsPage_vue_vue_type_template_id_debe9446_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
   _MeetingsPage_vue_vue_type_template_id_debe9446_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -98162,6 +98756,22 @@ component.options.__file = "resources/js/components/admin/pages/MeetingsPage.vue
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./MeetingsPage.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true&":
+/*!************************************************************************************************************************!*\
+  !*** ./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true& ***!
+  \************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsPage_vue_vue_type_style_index_0_id_debe9446_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader!../../../../../node_modules/css-loader!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--7-2!../../../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../../../node_modules/vue-loader/lib??vue-loader-options!./MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pages/MeetingsPage.vue?vue&type=style&index=0&id=debe9446&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsPage_vue_vue_type_style_index_0_id_debe9446_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsPage_vue_vue_type_style_index_0_id_debe9446_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsPage_vue_vue_type_style_index_0_id_debe9446_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsPage_vue_vue_type_style_index_0_id_debe9446_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_MeetingsPage_vue_vue_type_style_index_0_id_debe9446_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 

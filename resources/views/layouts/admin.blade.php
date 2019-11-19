@@ -12,6 +12,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>Meeting Event | Admin</title>
+  <link rel="shortcut icon" href="{{asset('img/admin.png')}}" />
 
 <link rel="stylesheet" href="/css/app.css">
 <script src="https://kit.fontawesome.com/a076d05399.js"></script>

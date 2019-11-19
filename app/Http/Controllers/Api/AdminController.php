@@ -62,6 +62,7 @@ class AdminController extends Controller
 
         return response()->json($response, 404);
     }
+
     public function uamInfo(){ //users and meetings count
         $usersCount = User::where('user_type', '!=', 'Admin')->count(); //Users All
         $companysCount = User::where('user_type', '=', 'Company')->count(); //Companies All
@@ -92,6 +93,22 @@ class AdminController extends Controller
             'dates' => $date
         ];
 
+        return response()->json($response, 200);
+    }
+
+    public function infoMeeting(){ //meeting info for create meeting
+        //users
+        $users = User::where('user_type', '!=', 'Admin')->orderBy('email')->get();
+        //event time
+        $event = Event::where('id', 1)->first();
+        //event date
+        $dates = EventDate::all();
+        $response = [
+            'msg' => 'Meeting info.',
+            'users' => $users,
+            'event' => $event,
+            'dates' => $dates
+        ];
         return response()->json($response, 200);
     }
 

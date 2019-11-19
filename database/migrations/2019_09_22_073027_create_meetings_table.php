@@ -22,6 +22,7 @@ class CreateMeetingsTable extends Migration
             $table->date('date_meeting');
             $table->time('start_time');
             $table->time('finish_time')->nullable();
+            $table->bigInteger('meeting_code')->nullable();
             $table->enum('status', ['pending', 'change time', 'approved']);
             $table->integer('do_order'); // who did order 
             $table->timestamps();

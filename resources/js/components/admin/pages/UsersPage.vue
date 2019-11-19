@@ -1,6 +1,5 @@
 <template>
     <div id='users-page'>
-
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0 text-dark">{{title}}</h1>
@@ -20,18 +19,18 @@
             </div>
         </section>
         
-        <nav class="navbar sticky-top" style="background: #f4f6f9; flex-flow: row-reverse;">
-          <div class="row my-2">
+        <nav class="navbar sticky-top" style="background: #f4f6f9;">
+          
             <form class="form-inline ml-3 pr-2">
               <div class="input-group input-group-sm">
                 <input class="form-control form-control-navbar rounded-pill" v-model="userSearch" type="search" placeholder="Search by email" aria-label="Search">
               </div>
             </form>
             
-            <button class="btn btn-success" data-toggle="modal" data-target="#UserRegistration">
+            <button class="btn btn-success float-right" style="flex-flow: row-reverse;" data-toggle="modal" data-target="#UserRegistration">
                 User Registrations
             </button>
-          </div>
+          
         </nav>
 
         <div class="users-list">
@@ -73,7 +72,7 @@
                           </button>
                         </div>
                         <div class="modal-body">
-                          Do you need "{{user.first_name+' '+user.last_name}}"
+                          Delete "{{user.first_name+' '+user.last_name}}" ?
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
@@ -191,9 +190,6 @@ export default {
         }
     },
     methods:{
-      reset () {
-            Object.assign(this.$data, this.$options.data());
-        },
       getUsersList(){
         axios.get('v1/admin/usersList',this.isLoading = true)
         .then((res) => {
@@ -248,6 +244,7 @@ export default {
     },
     created(){
       this.getUsersList()
+      document.title = this.title
     }
     
       
