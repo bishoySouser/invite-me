@@ -45,5 +45,6 @@ Route::get('v1/info/uam', 'Api\AdminController@uamInfo');
 
 Route::post('v1/meeting/admin/userAdd', 'Api\AdminController@useradd');//add admin
 Route::get('v1/admin/usersList', 'Api\AdminController@usersList');//get users list
+Route::get('v1/admin/meetings', 'Api\AdminController@getMeetings');//get meetings
 Route::get('v1/admin/infoMeeting', 'Api\AdminController@infoMeeting');//get users list
 Route::delete('v1/admin/user/{id}', 'Api\AdminController@deleteUser');//delete User

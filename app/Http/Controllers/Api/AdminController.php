@@ -63,6 +63,16 @@ class AdminController extends Controller
         return response()->json($response, 404);
     }
 
+    public function getMeetings(){ //get all meetings
+        $meetings = Meeting::with('invitee')->with('owner')->get();
+        $response = [
+            'msg' => 'all Meetings.',
+            'list' => $meetings,
+        ];
+
+        return response()->json($response, 200);
+    }
+
     public function uamInfo(){ //users and meetings count
         $usersCount = User::where('user_type', '!=', 'Admin')->count(); //Users All
         $companysCount = User::where('user_type', '=', 'Company')->count(); //Companies All

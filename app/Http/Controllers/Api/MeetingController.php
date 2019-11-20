@@ -24,8 +24,9 @@ class MeetingController extends Controller
             'invitee' => 'required|numeric',
             'subject' => 'required|max:20',
             'description' =>'required|min:10',
-            'date' => 'required|date_format:Y-m-d|after_or_equal:'.date("Y-m-d"),
+            'date' => 'required',
             'start_time' => 'required|date_format:H:i:s',
+            'meetingNum' => 'required'
         ]);
     }
 
@@ -67,6 +68,7 @@ class MeetingController extends Controller
         $description = $request->input('description');
         $date = $request->input('date');
         $start = $request->input('start_time');
+        $meetingNum = $request->input('meetingNum');
 
         //add 30 mins to Strat time meeting
         // format: H:i:ss , time , 1800s = 1800/60 = 30mins //
@@ -74,7 +76,11 @@ class MeetingController extends Controller
         $newtime = strtotime($start);
         $finish = date("H:i:ss", $newtime  + 1800);
         //status default => pending
-        $status = 'pending';
+        if($request->input('status')){
+            $status = $request->input('status');
+        }else{
+            $status = 'pending';
+        }
         //insert data in meeting without owner_id & invitee_id
         $meeting = new Meeting([
             'subject' => $subject,
@@ -83,7 +89,8 @@ class MeetingController extends Controller
             'start_time' => $start,
             'finish_time' => $finish,
             'status' => $status,
-            'do_order' => $invitee
+            'do_order' => $invitee,
+            'meetingNum' => $meetingNum
         ]);
         //owner object & invitee object
         $owner = User::find($owner);
