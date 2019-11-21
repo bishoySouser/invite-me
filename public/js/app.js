@@ -2484,6 +2484,68 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // Import component
  // Import stylesheet
 
@@ -2514,7 +2576,11 @@ __webpack_require__.r(__webpack_exports__);
       users: [],
       dates: [],
       meetings: [],
-      meetingSearch: ''
+      meetingSearch: '',
+      searchType: 'Meeting num',
+      dateChange: 'Select Date',
+      timeChange: 'Select Time',
+      orderDo: 'Who need change date?'
     };
   },
   computed: {
@@ -2522,7 +2588,13 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       return this.meetings.filter(function (meeting) {
-        return meeting.meetingNum.toString().includes(_this.meetingSearch);
+        if (_this.searchType == 'Meeting num') {
+          return meeting.meetingNum.toString().includes(_this.meetingSearch);
+        } else if (_this.searchType == 'one to') {
+          return meeting.invitee.email.toLowerCase().includes(_this.meetingSearch.toLowerCase());
+        } else if (_this.searchType == 'one') {
+          return meeting.owner.email.toLowerCase().includes(_this.meetingSearch.toLowerCase());
+        }
       });
     }
   },
@@ -2560,8 +2632,41 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       axios.get('v1/admin/meetings').then(function (res) {
-        _this3.meetings = res.data.list;
-        console.log(res);
+        _this3.meetings = res.data.list; // console.log(res);
+      });
+    },
+    editDate: function editDate(meetingId) {
+      var _this4 = this;
+
+      axios.put('v1/meeting/status', {
+        id: meetingId,
+        do_order: this.orderDo,
+        date: this.dateChange,
+        start_time: this.timeChange
+      }).then(function (res) {
+        $('#modelEdit' + meetingId).modal('hide');
+        toast.fire({
+          type: 'success',
+          title: res.data.msg
+        });
+        location.reload();
+        console.log(_this4.orderDo + ' ' + _this4.dateChange + ' ' + _this4.timeChange);
+      });
+    },
+    deleteMeeting: function deleteMeeting(value, id) {
+      var _this5 = this;
+
+      axios["delete"]('/v1/meeting/' + id).then(function (res) {
+        $('#model' + id).modal('hide');
+
+        var index = _this5.meetings.indexOf(value);
+
+        _this5.meetings.splice(index, 1);
+
+        toast.fire({
+          type: 'error',
+          title: res.data.msg
+        }); // console.log('delete meeting'+id)
       });
     }
   },
@@ -3047,8 +3152,7 @@ __webpack_require__.r(__webpack_exports__);
         setTimeout(function () {
           _this2.isLoading = false;
         }, 300);
-        _this2.users = res.data.list;
-        console.log(res.data.list);
+        _this2.users = res.data.list; // console.log(res.data.list);
       });
     },
     addUser: function addUser() {
@@ -10315,7 +10419,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "form > div:nth-child(3) > div:nth-child(2) > div[data-v-debe9446] {\n  padding: 0px;\n}", ""]);
+exports.push([module.i, "form > div:nth-child(3) > div:nth-child(2) > div[data-v-debe9446] {\n  padding: 0px;\n}\nform > div:nth-child(4) > div > div[data-v-debe9446] {\n  padding: 0px;\n}", ""]);
 
 // exports
 
@@ -80616,7 +80720,7 @@ var render = function() {
     _c("section", { staticClass: "content" }, [
       _c("div", { staticClass: "container-fluid" }, [
         _c("div", { staticClass: "row" }, [
-          _vm._v("\n\n            " + _vm._s(_vm.title) + "\n            ")
+          _vm._v("\n            " + _vm._s(_vm.title) + "\n            ")
         ])
       ])
     ]),
@@ -80639,10 +80743,10 @@ var render = function() {
                   expression: "meetingSearch"
                 }
               ],
-              staticClass: "form-control form-control-navbar rounded-pill",
+              staticClass: "form-control form-control-navbar",
               attrs: {
                 type: "search",
-                placeholder: "Search by Meeting num",
+                placeholder: "Search by" + " " + _vm.searchType,
                 "aria-label": "Search"
               },
               domProps: { value: _vm.meetingSearch },
@@ -80654,7 +80758,44 @@ var render = function() {
                   _vm.meetingSearch = $event.target.value
                 }
               }
-            })
+            }),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.searchType,
+                    expression: "searchType"
+                  }
+                ],
+                attrs: { name: "", id: "" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.searchType = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              [
+                _c("option", [_vm._v("Meeting num")]),
+                _vm._v(" "),
+                _c("option", [_vm._v("one to")]),
+                _vm._v(" "),
+                _c("option", [_vm._v("one")])
+              ]
+            )
           ])
         ]),
         _vm._v(" "),
@@ -80716,19 +80857,443 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("td", { staticStyle: { background: "#fff" } }, [
-                  _vm._v(_vm._s(meeting.start_time) + "\n                "),
-                  _c("span", { staticStyle: { display: "block" } }, [
-                    _vm._v(_vm._s(meeting.date_meeting))
-                  ])
+                  _c(
+                    "a",
+                    {
+                      attrs: {
+                        href: "#",
+                        role: "button",
+                        "data-toggle": "modal",
+                        "data-target": "#modalEdit" + meeting.id
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                  " +
+                          _vm._s(meeting.start_time) +
+                          "\n                  "
+                      ),
+                      _c("span", { staticStyle: { display: "block" } }, [
+                        _vm._v(_vm._s(meeting.date_meeting))
+                      ])
+                    ]
+                  )
                 ]),
                 _vm._v(" "),
                 _c("td", { staticStyle: { background: "#fff" } }, [
                   _vm._v(_vm._s(meeting.status))
                 ]),
                 _vm._v(" "),
-                _vm._m(2, true),
+                _c("td", { staticStyle: { background: "#fff" } }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-danger",
+                      attrs: {
+                        "data-toggle": "modal",
+                        "data-target": "#model" + meeting.id
+                      }
+                    },
+                    [_vm._v("Delete")]
+                  )
+                ]),
                 _vm._v(" "),
-                _vm._m(3, true)
+                _c(
+                  "div",
+                  {
+                    staticClass: "modal fade",
+                    attrs: {
+                      id: "modalEdit" + meeting.id,
+                      tabindex: "-1",
+                      role: "dialog",
+                      "aria-labelledby": "exampleModalLabel",
+                      "aria-hidden": "true"
+                    }
+                  },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "modal-dialog",
+                        attrs: { role: "document" }
+                      },
+                      [
+                        _c("div", { staticClass: "modal-content" }, [
+                          _vm._m(2, true),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "modal-body" }, [
+                            _c(
+                              "div",
+                              { staticClass: "container text-monospace" },
+                              [
+                                _c("div", { staticClass: "row d-block" }, [
+                                  _c(
+                                    "form",
+                                    {
+                                      attrs: { method: "POST" },
+                                      on: {
+                                        submit: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.changeDate($event)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        { staticClass: "form-group row" },
+                                        [
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-sm-6 col-form-label",
+                                              attrs: { for: "inputDate" }
+                                            },
+                                            [_vm._v("Who need change date?")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "select",
+                                            {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.orderDo,
+                                                  expression: "orderDo"
+                                                }
+                                              ],
+                                              staticClass:
+                                                "mx-datepicker form-control",
+                                              on: {
+                                                change: function($event) {
+                                                  var $$selectedVal = Array.prototype.filter
+                                                    .call(
+                                                      $event.target.options,
+                                                      function(o) {
+                                                        return o.selected
+                                                      }
+                                                    )
+                                                    .map(function(o) {
+                                                      var val =
+                                                        "_value" in o
+                                                          ? o._value
+                                                          : o.value
+                                                      return val
+                                                    })
+                                                  _vm.orderDo = $event.target
+                                                    .multiple
+                                                    ? $$selectedVal
+                                                    : $$selectedVal[0]
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _c(
+                                                "option",
+                                                {
+                                                  attrs: {
+                                                    value:
+                                                      "Who need change date?",
+                                                    hidden: ""
+                                                  }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    "Who need change date?"
+                                                  )
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "option",
+                                                {
+                                                  domProps: {
+                                                    value: meeting.invitee.id
+                                                  }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(
+                                                      meeting.invitee.email
+                                                    )
+                                                  )
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "option",
+                                                {
+                                                  domProps: {
+                                                    value: meeting.owner.id
+                                                  }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(meeting.owner.email)
+                                                  )
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("hr"),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        { staticClass: "form-group row" },
+                                        [
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-sm-2 col-form-label",
+                                              attrs: { for: "inputDate" }
+                                            },
+                                            [_vm._v("Date")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "div",
+                                            { staticClass: "col-sm-10" },
+                                            [
+                                              _c(
+                                                "select",
+                                                {
+                                                  directives: [
+                                                    {
+                                                      name: "model",
+                                                      rawName: "v-model",
+                                                      value: _vm.dateChange,
+                                                      expression: "dateChange"
+                                                    }
+                                                  ],
+                                                  staticClass:
+                                                    "mx-datepicker form-control",
+                                                  attrs: { id: "" },
+                                                  on: {
+                                                    change: function($event) {
+                                                      var $$selectedVal = Array.prototype.filter
+                                                        .call(
+                                                          $event.target.options,
+                                                          function(o) {
+                                                            return o.selected
+                                                          }
+                                                        )
+                                                        .map(function(o) {
+                                                          var val =
+                                                            "_value" in o
+                                                              ? o._value
+                                                              : o.value
+                                                          return val
+                                                        })
+                                                      _vm.dateChange = $event
+                                                        .target.multiple
+                                                        ? $$selectedVal
+                                                        : $$selectedVal[0]
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c(
+                                                    "option",
+                                                    {
+                                                      attrs: {
+                                                        value: "Select Date",
+                                                        hidden: ""
+                                                      }
+                                                    },
+                                                    [_vm._v("Select Date")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _vm._l(_vm.dates, function(
+                                                    date
+                                                  ) {
+                                                    return _c(
+                                                      "option",
+                                                      { key: date.index },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            date.event_date
+                                                          )
+                                                        )
+                                                      ]
+                                                    )
+                                                  })
+                                                ],
+                                                2
+                                              )
+                                            ]
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        { staticClass: "form-group row" },
+                                        [
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-sm-2 col-form-label",
+                                              attrs: { for: "inputTime" }
+                                            },
+                                            [_vm._v("Time")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "div",
+                                            { staticClass: "col-sm-10" },
+                                            [
+                                              _c("date-picker", {
+                                                staticClass: "form-control",
+                                                attrs: {
+                                                  lang: "en",
+                                                  "input-name": "start_time",
+                                                  type: "time",
+                                                  "value-type": "format",
+                                                  format: "HH:mm:ss",
+                                                  "time-picker-options":
+                                                    _vm.timePickerOptions,
+                                                  placeholder: "Select Time"
+                                                },
+                                                model: {
+                                                  value: _vm.timeChange,
+                                                  callback: function($$v) {
+                                                    _vm.timeChange = $$v
+                                                  },
+                                                  expression: "timeChange"
+                                                }
+                                              }),
+                                              _vm._v(" "),
+                                              _c("has-error", {
+                                                attrs: {
+                                                  form: _vm.form,
+                                                  field: "start_time"
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ])
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "modal-footer" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: {
+                                  type: "button",
+                                  disabled:
+                                    _vm.orderDo == "Who need change date?" ||
+                                    _vm.dateChange == "Select Date" ||
+                                    _vm.timeChange == "Select Time"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.editDate(meeting.id)
+                                  }
+                                }
+                              },
+                              [_vm._v("Save changes")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-secondary",
+                                attrs: {
+                                  type: "button",
+                                  "data-dismiss": "modal"
+                                }
+                              },
+                              [_vm._v("Close")]
+                            )
+                          ])
+                        ])
+                      ]
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "modal fade",
+                    attrs: {
+                      id: "model" + meeting.id,
+                      tabindex: "-1",
+                      role: "dialog",
+                      "aria-labelledby": "exampleModalLabel",
+                      "aria-hidden": "true"
+                    }
+                  },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "modal-dialog",
+                        attrs: { role: "document" }
+                      },
+                      [
+                        _c("div", { staticClass: "modal-content" }, [
+                          _vm._m(3, true),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "modal-body" }, [
+                            _vm._v(
+                              '\n                      Delete meeting number "' +
+                                _vm._s(meeting.meetingNum) +
+                                '" ?\n                    '
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "modal-footer" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-secondary",
+                                attrs: {
+                                  type: "button",
+                                  "data-dismiss": "modal"
+                                }
+                              },
+                              [_vm._v("No")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteMeeting(
+                                      meeting,
+                                      meeting.id
+                                    )
+                                  }
+                                }
+                              },
+                              [_vm._v("Yes")]
+                            )
+                          ])
+                        ])
+                      ]
+                    )
+                  ]
+                )
               ])
             }),
             0
@@ -81123,16 +81688,46 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", { staticStyle: { background: "#fff" } }, [
-      _c("button", { staticClass: "btn btn-primary" }, [_vm._v("Edit")])
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Meeting time")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", { staticStyle: { background: "#fff" } }, [
-      _c("button", { staticClass: "btn btn-danger" }, [_vm._v("Delete")])
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Delete Meeting")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
     ])
   },
   function() {

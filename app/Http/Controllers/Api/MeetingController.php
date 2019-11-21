@@ -185,7 +185,7 @@ class MeetingController extends Controller
         $this->validate($request, [
             'id' => 'required|numeric',
             'do_order' => 'required|numeric',
-            'date' => 'required|date_format:Y-m-d|after_or_equal:'.date("Y-m-d"),
+            'date' => 'required',
             'start_time' => 'required|date_format:H:i:s'
         ]);
 

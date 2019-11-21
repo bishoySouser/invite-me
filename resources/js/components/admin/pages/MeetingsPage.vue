@@ -15,7 +15,6 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-
                 {{title}}
                 </div>
             </div>
@@ -25,7 +24,12 @@
           
             <form class="form-inline ml-3 pr-2">
               <div class="input-group input-group-sm">
-                <input class="form-control form-control-navbar rounded-pill" type="search" v-model="meetingSearch" placeholder="Search by Meeting num" aria-label="Search">
+                <input class="form-control form-control-navbar" type="search" v-model="meetingSearch" :placeholder="'Search by'+' '+ searchType" aria-label="Search">
+                <select v-model="searchType" name="" id="">
+                  <option>Meeting num</option>
+                  <option>one to</option>
+                  <option>one</option>
+                </select>
               </div>
             </form>
             
@@ -58,40 +62,98 @@
                   <td style='background: #fff;'>{{meeting.owner.first_name+' '+meeting.owner.last_name}}
                     <span style='display: block;'>{{meeting.owner.email}}</span>
                   </td>
-                  <td style='background: #fff;'>{{meeting.start_time}}
-                    <span style='display: block;'>{{meeting.date_meeting}}</span>
+                  <td style='background: #fff;'>
+                    <a href="#" role="button" data-toggle="modal" :data-target="'#modalEdit'+meeting.id">
+                      {{meeting.start_time}}
+                      <span style='display: block;'>{{meeting.date_meeting}}</span>
+                    </a>
                   </td>
                   <td style='background: #fff;'>{{meeting.status}}</td>
                   <td style='background: #fff;'>
-                    <button class='btn btn-primary'>Edit</button>
-                  </td>
-                  <td style='background: #fff;'>
-                    <button class='btn btn-danger'>Delete</button>
+                    <button class='btn btn-danger' data-toggle="modal" :data-target="'#model'+meeting.id">Delete</button>
                   </td>
 
-                </tr>
-                  
-                  <!-- Modal delete -->
-                  <!-- <div class="modal fade" :id="'model'+user.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <!-- edit time -->
+                  <div class="modal fade" :id="'modalEdit'+meeting.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Delete User</h5>
+                          <h5 class="modal-title">Meeting time</h5>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
                         <div class="modal-body">
-                          Delete "{{user.first_name+' '+user.last_name}}" ?
+                          <div class="container text-monospace">
+                                <div class="row d-block">
+                                  <form method="POST" @submit.prevent="changeDate">
+                                        <div class='form-group row'>
+                                          <label for="inputDate" class="col-sm-6 col-form-label">Who need change date?</label>
+                                          <select class='mx-datepicker form-control' v-model="orderDo" >
+                                            <option value="Who need change date?" hidden>Who need change date?</option>
+                                             <option :value='meeting.invitee.id'>{{meeting.invitee.email}}</option>
+                                             <option :value='meeting.owner.id'>{{meeting.owner.email}}</option>
+                                          </select>
+                                        </div>
+                                        <hr>
+                                        <div class="form-group row">
+                                        <label for="inputDate" class="col-sm-2 col-form-label">Date</label>
+                                            <div class="col-sm-10">                      
+                                                <select class='mx-datepicker form-control' v-model="dateChange" id="">
+                                                  <option value="Select Date" hidden>Select Date</option>
+                                                  <option v-for='date in dates' :key="date.index">{{date.event_date}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputTime" class="col-sm-2 col-form-label">Time</label>
+                                            <div class="col-sm-10">
+                                                <date-picker lang="en" input-name='start_time' 
+                                                class="form-control"
+                                                type="time" v-model='timeChange' value-type="format" format="HH:mm:ss" 
+                                                :time-picker-options="timePickerOptions" placeholder="Select Time">
+                                                <!-- :class="{ 'is-invalid': form.errors.has('start_time') }"
+                                                :time-picker-options="timePickerOptions" placeholder="Select Time" -->
+                                                </date-picker>
+                                                <has-error :form="form" field="start_time"></has-error>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                          </div>
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                          <button type="button" class="btn btn-danger" @click="deleteUser(user.id)">Yes</button>
+                          <button type="button" class="btn btn-primary" @click='editDate(meeting.id)'
+                          :disabled="orderDo == 'Who need change date?' || dateChange == 'Select Date' || timeChange == 'Select Time'">Save changes</button>
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                       </div>
                     </div>
-                  </div> -->
-                
+                  </div>
+
+                  <!-- Modal delete -->
+                  <div class="modal fade" :id="'model'+meeting.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Delete Meeting</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          Delete meeting number "{{meeting.meetingNum}}" ?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                          <button type="button" class="btn btn-danger" @click='deleteMeeting(meeting, meeting.id)'>Yes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </tr>
+                  
               </tbody>
             </table>
           </div>
@@ -208,13 +270,23 @@ export default {
             users:[],
             dates:[],
             meetings:[],
-            meetingSearch:''
+            meetingSearch:'',
+            searchType:'Meeting num',
+            dateChange: 'Select Date',
+            timeChange:'Select Time',
+            orderDo:'Who need change date?'
         }
     },
     computed: {
         filteredList() {
             return this.meetings.filter(meeting => {
+              if(this.searchType == 'Meeting num'){
                 return meeting.meetingNum.toString().includes(this.meetingSearch)
+              }else if(this.searchType == 'one to'){
+                return meeting.invitee.email.toLowerCase().includes(this.meetingSearch.toLowerCase())
+              }else if(this.searchType == 'one'){
+                return meeting.owner.email.toLowerCase().includes(this.meetingSearch.toLowerCase())
+              }
             })
         }
     },
@@ -253,7 +325,37 @@ export default {
         axios.get('v1/admin/meetings')
         .then(res => {
           this.meetings = res.data.list 
-          console.log(res);
+          // console.log(res);
+        })
+      },
+      editDate(meetingId){
+        axios.put('v1/meeting/status',{
+          id: meetingId,
+          do_order: this.orderDo,
+          date: this.dateChange,
+          start_time: this.timeChange 
+        })
+        .then(res => {
+          $('#modelEdit'+meetingId).modal('hide')
+            toast.fire({
+              type: 'success',
+              title: res.data.msg
+            })
+            location.reload();
+          console.log(this.orderDo+' '+this.dateChange+' '+this.timeChange)
+        })
+      },
+      deleteMeeting(value,id){
+        axios.delete('/v1/meeting/' + id)
+        .then(res => {
+          $('#model'+id).modal('hide')
+          let index = this.meetings.indexOf(value)
+          this.meetings.splice(index, 1);
+          toast.fire({
+              type: 'error',
+              title: res.data.msg
+            })
+          // console.log('delete meeting'+id)
         })
       }
     },
@@ -267,6 +369,9 @@ export default {
 
 <style lang="scss" scoped>
   form > div:nth-child(3) > div:nth-child(2) > div{
+    padding: 0px;
+  }
+  form > div:nth-child(4) > div > div{
     padding: 0px;
   }
 </style>
