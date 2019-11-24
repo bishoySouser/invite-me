@@ -2215,6 +2215,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
  // Import component
 
@@ -2236,19 +2239,8 @@ __webpack_require__.r(__webpack_exports__);
       companies: 1,
       expeditors: 1,
       innovators: 1,
-      data: [{
-        day: "5-11-2019",
-        Meeting: 2
-      }, {
-        day: "6-11-2019",
-        Meeting: 3
-      }, {
-        day: "7-11-2019",
-        Meeting: 2
-      }, {
-        day: "8-11-2019",
-        Meeting: 1
-      }],
+      approved: 0,
+      pending: 0,
       isLoading: false,
       fullPage: true
     };
@@ -2266,13 +2258,21 @@ __webpack_require__.r(__webpack_exports__);
         _this.innovators = res.data.data.Innovators;
       });
     },
-    loadinglazy: function loadinglazy() {
+    getMeetingStatusCount: function getMeetingStatusCount() {
       var _this2 = this;
+
+      axios.get('v1/admin/statusCount').then(function (res) {
+        _this2.approved = res.data.approved;
+        _this2.pending = res.data.pending; // console.log(res)
+      });
+    },
+    loadinglazy: function loadinglazy() {
+      var _this3 = this;
 
       this.isLoading = true; // simulate AJAX
 
       setTimeout(function () {
-        _this2.isLoading = false;
+        _this3.isLoading = false;
       }, 500);
     },
     onCancel: function onCancel() {
@@ -2281,6 +2281,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.uamCount();
+    this.getMeetingStatusCount();
     this.loadinglazy();
   }
 });
@@ -2560,7 +2561,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       title: 'Meetings',
-      meetingNum: Date.now() + Math.floor(Math.random() * 101),
+      meetingNum: Math.floor(new Date().valueOf() * Math.random()),
       form: new Form({
         personeOne: 'choose',
         personeTwo: 'choose',
@@ -3511,8 +3512,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3527,7 +3526,8 @@ __webpack_require__.r(__webpack_exports__);
       time: "",
       form: new Form({
         id: this.meeting.id,
-        date: "",
+        datesEvent: [],
+        date: "choose",
         start_time: "",
         do_order: this.userId
       }),
@@ -3557,6 +3557,16 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
       this.$Progress.finish();
+    },
+    meetingInfo: function meetingInfo() {
+      var _this2 = this;
+
+      axios.get('v1/admin/infoMeeting').then(function (res) {
+        _this2.datesEvent = res.data.dates;
+        _this2.timePickerOptions.start = res.data.event.event_start;
+        _this2.timePickerOptions.end = res.data.event.event_end;
+        console.log(res.data);
+      });
     }
   },
   watch: {
@@ -3565,6 +3575,9 @@ __webpack_require__.r(__webpack_exports__);
 
       f.start_time = val.slice(0, 8); // delete am or pm
     }
+  },
+  created: function created() {
+    this.meetingInfo();
   }
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
@@ -3653,6 +3666,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ModelMeeting',
@@ -3669,13 +3689,15 @@ __webpack_require__.r(__webpack_exports__);
       oldDate: '',
       hiddenTime: [],
       disabledDates: ['2019'],
+      datesEvent: [],
       form: new Form({
         owner: this.id,
         invitee: this.inviteeId,
         subject: "",
         description: "",
-        date: "",
-        start_time: ""
+        date: "choose",
+        start_time: "Select Time",
+        meetingNum: Math.floor(new Date().valueOf() * Math.random())
       }),
       timePickerOptions: {
         start: '9:00',
@@ -3733,16 +3755,26 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    onSubmit: function onSubmit() {
+    meetingInfo: function meetingInfo() {
       var _this3 = this;
+
+      axios.get('v1/admin/infoMeeting').then(function (res) {
+        _this3.datesEvent = res.data.dates;
+        _this3.timePickerOptions.start = res.data.event.event_start;
+        _this3.timePickerOptions.end = res.data.event.event_end;
+        console.log(res.data);
+      });
+    },
+    onSubmit: function onSubmit() {
+      var _this4 = this;
 
       this.$Progress.start();
       this.form.post('/v1/meeting').then(function (response) {
         // console.log(response.data.msg);
-        _this3.form.reset();
+        _this4.form.reset();
 
-        _this3.time = "";
-        $('#model' + _this3.id).modal('hide');
+        _this4.time = "";
+        $('#model' + _this4.id).modal('hide');
         toast.fire({
           type: 'success',
           title: response.data.msg
@@ -3757,6 +3789,9 @@ __webpack_require__.r(__webpack_exports__);
 
       f.start_time = val.slice(0, 8); // delete am or pm
     }
+  },
+  created: function created() {
+    this.meetingInfo();
   }
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
@@ -3772,7 +3807,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function($) {//
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var vue_loading_overlay__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-loading-overlay */ "./node_modules/vue-loading-overlay/dist/vue-loading.min.js");
+/* harmony import */ var vue_loading_overlay__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_loading_overlay__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-loading-overlay/dist/vue-loading.css */ "./node_modules/vue-loading-overlay/dist/vue-loading.css");
+/* harmony import */ var vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_1__);
 //
 //
 //
@@ -3814,8 +3852,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+// Import component
+ // Import stylesheet
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ModelMessage',
+  components: {
+    Loading: vue_loading_overlay__WEBPACK_IMPORTED_MODULE_0___default.a
+  },
   props: ['id', 'receiver', 'senderId'],
   data: function data() {
     return {
@@ -3826,7 +3877,10 @@ __webpack_require__.r(__webpack_exports__);
         sender: this.senderId,
         receiver: this.id,
         content: ''
-      })
+      }),
+      //loading
+      isLoading: false,
+      fullPage: true
     };
   },
   computed: {
@@ -3858,11 +3912,19 @@ __webpack_require__.r(__webpack_exports__);
     sendMessgae: function sendMessgae() {
       var _this2 = this;
 
-      this.form.post('/v1/message').then(function (response) {
+      this.form.post('/v1/message', this.isLoading = true).then(function (response) {
+        setTimeout(function () {
+          _this2.isLoading = false;
+        }, 300);
+
         _this2.gethistory();
 
         _this2.form.reset();
       });
+    },
+    onCancel: function onCancel() {
+      //loading pluging
+      console.log('User cancelled the loader.');
     }
   },
   created: function created() {
@@ -10495,7 +10557,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "form > div:nth-child(4) > div > div[data-v-b9a249de] {\n  padding: 0px !important;\n}\nform > div:nth-child(5) > div > div[data-v-b9a249de] {\n  padding: 0px !important;\n}", ""]);
+exports.push([module.i, "form > div:nth-child(6) > div > div[data-v-b9a249de] {\n  padding: 0px !important;\n}\nform > div:nth-child(7) > div > div[data-v-b9a249de] {\n  padding: 0px !important;\n}", ""]);
 
 // exports
 
@@ -80546,12 +80608,15 @@ var render = function() {
                 _c("bar-chart", {
                   attrs: {
                     id: "bar",
-                    data: _vm.data,
-                    xkey: "day",
+                    data: [
+                      { status: "approved", Meeting: _vm.approved },
+                      { status: "pending", Meeting: _vm.pending }
+                    ],
+                    xkey: "status",
                     ykeys: '["Meeting"]',
                     "bar-colors": '["blue"]',
                     labels: '["Meeting"]',
-                    "grid-text-weight": "bold",
+                    "grid-text-weight": "",
                     grid: "true",
                     resize: "true"
                   }
@@ -83103,31 +83168,52 @@ var render = function() {
                       "div",
                       { staticClass: "col-sm-10" },
                       [
-                        _c("date-picker", {
-                          staticClass: "form-control",
-                          class: { "is-invalid": _vm.form.errors.has("date") },
-                          attrs: {
-                            lang: "en",
-                            "input-name": "date",
-                            valueType: "format"
-                          },
-                          on: {
-                            "panel-change": function($event) {
-                              return _vm.handlePanelChange(
-                                _vm.form.date,
-                                _vm.meeting.owner_id,
-                                _vm.meeting.invitee_id
-                              )
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.date,
+                                expression: "form.date"
+                              }
+                            ],
+                            staticClass: "mx-datepicker form-control",
+                            attrs: { id: "dateMeeting" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.form,
+                                  "date",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
                             }
                           },
-                          model: {
-                            value: _vm.form.date,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "date", $$v)
-                            },
-                            expression: "form.date"
-                          }
-                        }),
+                          [
+                            _c("option", { attrs: { hidden: "" } }, [
+                              _vm._v("choose")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.datesEvent, function(date) {
+                              return _c("option", { key: date.index }, [
+                                _vm._v(_vm._s(date.event_date))
+                              ])
+                            })
+                          ],
+                          2
+                        ),
                         _vm._v(" "),
                         _c("has-error", {
                           attrs: { form: _vm.form, field: "date" }
@@ -83275,6 +83361,38 @@ var render = function() {
                 }
               },
               [
+                _c("div", { staticClass: "row justify-content-md-center" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "form-group col-md-12",
+                      staticStyle: { display: "contents" }
+                    },
+                    [
+                      _c("label", { attrs: { for: "meetingNumber" } }, [
+                        _vm._v("Meeting Number: ")
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "p",
+                        {
+                          staticStyle: { "font-family": "cursive" },
+                          attrs: { id: "meetingNumber" }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(_vm.form.meetingNum) +
+                              "\n                            "
+                          )
+                        ]
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("hr"),
+                _vm._v(" "),
                 _c("div", { staticClass: "form-group row" }, [
                   _c(
                     "label",
@@ -83427,44 +83545,54 @@ var render = function() {
                     [_vm._v("Date")]
                   ),
                   _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "col-sm-10" },
-                    [
-                      _c("date-picker", {
-                        staticClass: "form-control",
-                        class: { "is-invalid": _vm.form.errors.has("date") },
-                        attrs: {
-                          lang: "en",
-                          "input-name": "date",
-                          onkeydown: "return false",
-                          valueType: "format",
-                          "disabled-days": _vm.disabledDates
-                        },
+                  _c("div", { staticClass: "col-sm-10" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form.date,
+                            expression: "form.date"
+                          }
+                        ],
+                        staticClass: "mx-datepicker form-control",
+                        attrs: { id: "dateMeeting" },
                         on: {
-                          "panel-change": function($event) {
-                            return _vm.handlePanelChange(
-                              _vm.form.date,
-                              _vm.form.owner,
-                              _vm.form.invitee
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.form,
+                              "date",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
                             )
                           }
-                        },
-                        model: {
-                          value: _vm.form.date,
-                          callback: function($$v) {
-                            _vm.$set(_vm.form, "date", $$v)
-                          },
-                          expression: "form.date"
                         }
-                      }),
-                      _vm._v(" "),
-                      _c("has-error", {
-                        attrs: { form: _vm.form, field: "date" }
-                      })
-                    ],
-                    1
-                  )
+                      },
+                      [
+                        _c("option", { attrs: { hidden: "" } }, [
+                          _vm._v("choose")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.datesEvent, function(date) {
+                          return _c("option", { key: date.index }, [
+                            _vm._v(_vm._s(date.event_date))
+                          ])
+                        })
+                      ],
+                      2
+                    )
+                  ])
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "form-group row" }, [
@@ -83493,9 +83621,7 @@ var render = function() {
                           "value-type": "format",
                           format: "HH:mm:ss",
                           "time-picker-options": _vm.timePickerOptions,
-                          placeholder: "Select Time",
-                          onkeydown: "return false",
-                          disabled: _vm.form.date < _vm.now
+                          placeholder: "Select Time"
                         },
                         model: {
                           value: _vm.time,
@@ -83518,9 +83644,20 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-primary float-right",
-                    attrs: { type: "submit" }
+                    attrs: {
+                      type: "submit",
+                      disabled:
+                        _vm.form.subject.length < 3 ||
+                        _vm.form.description.length < 10 ||
+                        _vm.form.date == "choose" ||
+                        _vm.form.start_time == "Select Time"
+                    }
                   },
-                  [_vm._v("Save changes")]
+                  [
+                    _vm._v(
+                      "\n                    Save changes\n                    "
+                    )
+                  ]
                 )
               ]
             )
@@ -83592,130 +83729,153 @@ var render = function() {
     },
     [
       _c("div", { staticClass: "modal-dialog modal-lg" }, [
-        _c("div", { staticClass: "modal-content" }, [
-          _c("div", { staticClass: "modal-header" }, [
+        _c(
+          "div",
+          { staticClass: "modal-content" },
+          [
+            _c("div", { staticClass: "modal-header" }, [
+              _c(
+                "h5",
+                {
+                  staticClass: "modal-title",
+                  attrs: { id: "exampleModalLabel" }
+                },
+                [_vm._v(_vm._s(_vm.receiver))]
+              ),
+              _vm._v(" "),
+              _vm._m(0)
+            ]),
+            _vm._v(" "),
             _c(
-              "h5",
+              "div",
               {
-                staticClass: "modal-title",
-                attrs: { id: "exampleModalLabel" }
+                directives: [
+                  {
+                    name: "chat-scroll",
+                    rawName: "v-chat-scroll",
+                    value: {
+                      always: true,
+                      smooth: false,
+                      scrollonremoved: true
+                    },
+                    expression:
+                      "{always: true, smooth: false, scrollonremoved:true}"
+                  }
+                ],
+                staticClass: "modal-body demo",
+                style: { height: _vm.bodyH + "px", "overflow-y": "scroll" },
+                attrs: { id: "demo" }
               },
-              [_vm._v(_vm._s(_vm.receiver))]
+              _vm._l(_vm.history, function(message) {
+                return _c("div", { key: message.num }, [
+                  message.receiver_id != _vm.id
+                    ? _c("div", { staticClass: "row justify-content-start" }, [
+                        _c("div", { staticClass: "col-auto" }, [
+                          _c("span", [_vm._v(_vm._s(_vm.receiver))]),
+                          _vm._v(":"),
+                          _c(
+                            "p",
+                            {
+                              staticClass: "bg-info text-white mr-5 p-2 rounded"
+                            },
+                            [_vm._v(_vm._s(message.content))]
+                          )
+                        ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  message.receiver_id == _vm.id
+                    ? _c("div", { staticClass: "row justify-content-end" }, [
+                        _c("div", { staticClass: "col-auto" }, [
+                          _c(
+                            "p",
+                            {
+                              staticClass:
+                                "bg-secondary text-white ml-5 p-2 rounded"
+                            },
+                            [_vm._v(_vm._s(message.content))]
+                          )
+                        ])
+                      ])
+                    : _vm._e()
+                ])
+              }),
+              0
             ),
             _vm._v(" "),
-            _vm._m(0)
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              directives: [
-                {
-                  name: "chat-scroll",
-                  rawName: "v-chat-scroll",
-                  value: { always: true, smooth: false, scrollonremoved: true },
-                  expression:
-                    "{always: true, smooth: false, scrollonremoved:true}"
-                }
-              ],
-              staticClass: "modal-body demo",
-              style: { height: _vm.bodyH + "px", "overflow-y": "scroll" },
-              attrs: { id: "demo" }
-            },
-            _vm._l(_vm.history, function(message) {
-              return _c("div", { key: message.num }, [
-                message.receiver_id != _vm.id
-                  ? _c("div", { staticClass: "row justify-content-start" }, [
-                      _c("div", { staticClass: "col-auto" }, [
-                        _c("span", [_vm._v(_vm._s(_vm.receiver))]),
-                        _vm._v(":"),
-                        _c(
-                          "p",
-                          {
-                            staticClass: "bg-info text-white mr-5 p-2 rounded"
-                          },
-                          [_vm._v(_vm._s(message.content))]
-                        )
-                      ])
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                message.receiver_id == _vm.id
-                  ? _c("div", { staticClass: "row justify-content-end" }, [
-                      _c("div", { staticClass: "col-auto" }, [
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "bg-secondary text-white ml-5 p-2 rounded"
-                          },
-                          [_vm._v(_vm._s(message.content))]
-                        )
-                      ])
-                    ])
-                  : _vm._e()
-              ])
-            }),
-            0
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "modal-footer" }, [
-            _c(
-              "form",
-              {
-                attrs: { action: "" },
-                on: {
-                  submit: function($event) {
-                    $event.preventDefault()
-                    return _vm.sendMessgae($event)
-                  }
-                }
+            _c("loading", {
+              attrs: {
+                active: _vm.isLoading,
+                "can-cancel": true,
+                "on-cancel": _vm.onCancel,
+                "is-full-page": _vm.fullPage
               },
-              [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { for: "Messgae" } }, [
-                    _vm._v("Message:")
+              on: {
+                "update:active": function($event) {
+                  _vm.isLoading = $event
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-footer" }, [
+              _c(
+                "form",
+                {
+                  attrs: { action: "" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.sendMessgae($event)
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", { attrs: { for: "Messgae" } }, [
+                      _vm._v("Message:")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.content,
+                          expression: "form.content"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        id: "Messgae",
+                        placeholder: "Write your message.."
+                      },
+                      domProps: { value: _vm.form.content },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.form, "content", $event.target.value)
+                        }
+                      }
+                    })
                   ]),
                   _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.form.content,
-                        expression: "form.content"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: {
-                      type: "text",
-                      id: "Messgae",
-                      placeholder: "Write your message.."
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary float-right",
+                      attrs: { type: "submit", disabled: _vm.sendable }
                     },
-                    domProps: { value: _vm.form.content },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(_vm.form, "content", $event.target.value)
-                      }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary float-right",
-                    attrs: { type: "submit", disabled: _vm.sendable }
-                  },
-                  [_vm._v("Send")]
-                )
-              ]
-            )
-          ])
-        ])
+                    [_vm._v("Send")]
+                  )
+                ]
+              )
+            ])
+          ],
+          1
+        )
       ])
     ]
   )

@@ -22,6 +22,9 @@ Route::get('/home',[
     'uses'=>'HomeController@index'
 ])->name('home');
 
+Route::get('/profile', function(){
+    return view('pages.profile');
+})->name('profile')->middleware('auth');;
 // meeting
 Route::get('/meeting/{staus?}', function () {
     return view('pages.meeting');

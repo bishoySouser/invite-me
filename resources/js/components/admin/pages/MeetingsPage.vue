@@ -254,7 +254,7 @@ export default {
     data() {
         return{
             title: 'Meetings',
-            meetingNum: Date.now()+Math.floor(Math.random() * 101),
+            meetingNum: Math.floor(new Date().valueOf() * Math.random()),
             form: new Form({
               personeOne: 'choose',
               personeTwo: 'choose',

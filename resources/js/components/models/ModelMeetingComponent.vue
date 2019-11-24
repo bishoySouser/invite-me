@@ -10,6 +10,15 @@
                 </div>
                 <div class="modal-body">
                     <form method="POST" @submit.prevent="onSubmit">
+                        <div class="row justify-content-md-center">
+                            <div class="form-group col-md-12" style="display:contents">
+                            <label for="meetingNumber" class="">Meeting Number: </label>
+                                <p id="meetingNumber" style="font-family: cursive;">
+                                {{form.meetingNum}}
+                                </p>
+                            </div>
+                        </div>
+                        <hr/>
                         <div class="form-group row">
                             <label for="inputInvitee" class="col-sm-2 col-form-label">Inivtee</label>
                             <div class="col-sm-10">
@@ -38,15 +47,10 @@
                         <div class="form-group row">
                             <label for="inputDate" class="col-sm-2 col-form-label">Date</label>
                             <div class="col-sm-10">
-                                <date-picker lang="en" input-name='date'
-                                class="form-control"
-                                :class="{ 'is-invalid': form.errors.has('date') }"
-                                onkeydown="return false"
-                                @panel-change="handlePanelChange(form.date, form.owner , form.invitee)"
-                                v-model="form.date" valueType="format" :disabled-days="disabledDates">
-                                </date-picker>
-                                
-                                <has-error :form="form" field="date"></has-error>
+                                <select id="dateMeeting" class="mx-datepicker form-control" v-model="form.date">
+                                    <option hidden>choose</option>
+                                    <option v-for='date in datesEvent' :key="date.index">{{date.event_date}}</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -57,12 +61,15 @@
                                 :class="{ 'is-invalid': form.errors.has('start_time') }"
                                  type="time" v-model="time" value-type="format" format="HH:mm:ss"
                                   
-                                 :time-picker-options="timePickerOptions" placeholder="Select Time"  onkeydown="return false" :disabled='form.date < now'>
+                                 :time-picker-options="timePickerOptions" placeholder="Select Time">
                                  </date-picker>
                                  <has-error :form="form" field="start_time"></has-error>
                             </div>
                         </div>
-                    <button type="submit" class="btn btn-primary float-right">Save changes</button>
+                        <button type="submit" class="btn btn-primary float-right" 
+                        :disabled='form.subject.length < 3 || form.description.length < 10 || form.date == "choose" || form.start_time == "Select Time"'>
+                        Save changes
+                        </button>
                     </form>
                 </div>
             </div>
@@ -88,15 +95,16 @@ export default {
             disabledTime: [],
             oldDate:'',
             hiddenTime:[],
-            
             disabledDates: ['2019'],
+            datesEvent:[],
             form: new Form({
                 owner:this.id,
                 invitee:this.inviteeId,
                 subject:"",
                 description:"",
-                date:"",
-                start_time:""
+                date:"choose",
+                start_time:"Select Time",
+                meetingNum: Math.floor(new Date().valueOf() * Math.random())
             }),
             timePickerOptions:{
                 start: '9:00',
@@ -144,6 +152,16 @@ export default {
 
 
         },
+        meetingInfo(){
+            axios.get('v1/admin/infoMeeting')
+            .then(res => {
+                
+                this.datesEvent = res.data.dates
+                this.timePickerOptions.start = res.data.event.event_start
+                this.timePickerOptions.end = res.data.event.event_end
+                console.log(res.data)
+                })
+            },
 
         onSubmit(){  
               this.$Progress.start();
@@ -167,14 +185,18 @@ export default {
             const f = this.form //var equel form object
             f.start_time = val.slice(0,8); // delete am or pm
         }
+    },
+    created(){
+        this.meetingInfo();
     }
 }
 </script>
 <style lang="scss" scoped>
-form > div:nth-child(4) > div > div{
+
+form > div:nth-child(6) > div > div{
     padding: 0px !important;
 }
-form > div:nth-child(5) > div > div{
+form > div:nth-child(7) > div > div{
     padding: 0px !important;
 }
 

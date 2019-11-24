@@ -177,6 +177,18 @@ class AdminController extends Controller
         return response()->json($response, 200);
     }
 
+    public function statusCount(){ //get statusMeeting
+        $approved = Meeting::where('status', 'approved')->count();
+        $pending = Meeting::where('status', 'pending')->count();
+        $response = [
+            'msg' => 'meeting status count.',
+            'approved' => $approved,
+            'pending' => $pending
+        ];
+
+        return response()->json($response, 200);
+    }
+
     public function editEventInfo(Request $request){
         $name = $request->input('name');
         $start = $request->input('event_start');

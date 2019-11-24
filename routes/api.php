@@ -48,3 +48,5 @@ Route::get('v1/admin/usersList', 'Api\AdminController@usersList');//get users li
 Route::get('v1/admin/meetings', 'Api\AdminController@getMeetings');//get meetings
 Route::get('v1/admin/infoMeeting', 'Api\AdminController@infoMeeting');//get users list
 Route::delete('v1/admin/user/{id}', 'Api\AdminController@deleteUser');//delete User
+
+Route::get('v1/admin/statusCount', 'Api\AdminController@statusCount');//get count status

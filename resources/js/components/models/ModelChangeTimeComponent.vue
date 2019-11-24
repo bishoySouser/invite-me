@@ -24,12 +24,10 @@
                                         <div class="form-group row">
                                         <label for="inputDate" class="col-sm-2 col-form-label">Date</label>
                                             <div class="col-sm-10">
-                                                <date-picker lang="en" input-name='date'
-                                                class="form-control"
-                                                :class="{ 'is-invalid': form.errors.has('date')}"
-                                                @panel-change="handlePanelChange(form.date, meeting.owner_id , meeting.invitee_id)"
-                                                v-model="form.date" valueType="format">
-                                                </date-picker>
+                                                <select id="dateMeeting" class="mx-datepicker form-control" v-model="form.date">
+                                                    <option hidden>choose</option>
+                                                    <option v-for='date in datesEvent' :key="date.index">{{date.event_date}}</option>
+                                                </select>
                                                 <has-error :form="form" field="date"></has-error>
                                                 <!-- class="{ 'is-invalid': form.errors.has('date') }"
                                                 v-model="form.date" valueType="format" :disabled-days="disabledDates" -->
@@ -77,8 +75,8 @@ export default {
             time:"",
             form: new Form({
                 id: this.meeting.id,
-                
-                date:"",
+                datesEvent:[],
+                date:"choose",
                 start_time:"",
                 do_order:this.userId
             }),
@@ -105,13 +103,26 @@ export default {
                         })
                 })
                 this.$Progress.finish();
-        }
+        },
+        meetingInfo(){
+            axios.get('v1/admin/infoMeeting')
+            .then(res => {
+                
+                this.datesEvent = res.data.dates
+                this.timePickerOptions.start = res.data.event.event_start
+                this.timePickerOptions.end = res.data.event.event_end
+                console.log(res.data)
+                })
+        },
     },
     watch:{
         time: function(val){
             const f = this.form //var equel form object
             f.start_time = val.slice(0,8); // delete am or pm
         }
+    },
+    created(){
+        this.meetingInfo();
     }
 }
 </script>

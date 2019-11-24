@@ -26,6 +26,11 @@
                         </div>
                     </div>
                 </div>
+                <!-- loading -->
+                  <loading :active.sync="isLoading" 
+                  :can-cancel="true" 
+                  :on-cancel="onCancel"
+                  :is-full-page="fullPage"></loading>
                 <div class="modal-footer">
                     <form action="" @submit.prevent="sendMessgae">
                         <div class="form-group">
@@ -41,8 +46,13 @@
 </template>
 
 <script>
+// Import component
+import Loading from 'vue-loading-overlay';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
 export default {
     name:'ModelMessage',
+    components: { Loading },
     props:[
         'id',
         'receiver',
@@ -58,7 +68,9 @@ export default {
                 receiver:this.id,
                 content:''
             }),
-            
+            //loading
+            isLoading: false,
+            fullPage: true
         }
     },
     computed:{
@@ -96,14 +108,19 @@ export default {
                             });
         },
         sendMessgae(){
-            this.form.post('/v1/message')
+            this.form.post('/v1/message',this.isLoading = true)
                 .then((response)=>{
-                    
+                    setTimeout(() => {
+                    this.isLoading = false
+                    },300)
                     this.gethistory();
                     this.form.reset();
                 })
             
-        }
+        },
+        onCancel() { //loading pluging
+              console.log('User cancelled the loader.')
+            }
     },
     created(){
         this.modelHeight()

@@ -114,12 +114,15 @@
               </div>
               <div class="card-body">
                 <bar-chart id="bar"
-                  :data=data
-                  xkey="day"
+                  :data=" [
+                    { status: 'approved', Meeting: approved},
+                    { status: 'pending', Meeting: pending},
+                  ]" 
+                  xkey="status"
                   ykeys='["Meeting"]' 
                   bar-colors='["blue"]' 
                   labels='["Meeting"]'   
-                  grid-text-weight="bold"
+                  grid-text-weight=""
                   grid="true" 
                   resize="true" >
                 </bar-chart>
@@ -156,12 +159,8 @@ export default {
             companies: 1,
             expeditors: 1,
             innovators: 1,
-            data: [
-              { day: "5-11-2019", Meeting: 2 },
-              { day: "6-11-2019", Meeting: 3 },
-              { day: "7-11-2019", Meeting: 2 },
-              { day: "8-11-2019", Meeting: 1 }
-            ],
+            approved:0,
+            pending:0,
             isLoading: false,
             fullPage: true
         }
@@ -178,6 +177,14 @@ export default {
                 this.innovators = res.data.data.Innovators
             })
       },
+      getMeetingStatusCount(){
+        axios.get('v1/admin/statusCount')
+            .then((res) => {
+                this.approved = res.data.approved;
+                this.pending = res.data.pending;
+                // console.log(res)
+            })
+      },
       loadinglazy() {
           this.isLoading = true;
           // simulate AJAX
@@ -191,6 +198,7 @@ export default {
     },
     created(){
       this.uamCount();
+      this.getMeetingStatusCount();
       this.loadinglazy()
     }
 }
