@@ -65,6 +65,7 @@ Vue.component('user-list-component', require('./components/Users/UsersListCompon
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 Vue.component('MeetingConfirm', require('./components/pages/PageMeetingConfirm').default);
+Vue.component('Profile', require('./components/pages/PageProfile').default);
 
 //for admin
 Vue.component('AdminSildbar', require('./components/admin/AdminSildebarComponent').default);

@@ -50,3 +50,5 @@ Route::get('v1/admin/infoMeeting', 'Api\AdminController@infoMeeting');//get user
 Route::delete('v1/admin/user/{id}', 'Api\AdminController@deleteUser');//delete User
 
 Route::get('v1/admin/statusCount', 'Api\AdminController@statusCount');//get count status
+
+Route::post('v1/user/uploadProfilePicture', 'Api\UserController@uploadProfilePicture');
