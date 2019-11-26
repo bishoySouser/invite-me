@@ -52,3 +52,4 @@ Route::delete('v1/admin/user/{id}', 'Api\AdminController@deleteUser');//delete U
 Route::get('v1/admin/statusCount', 'Api\AdminController@statusCount');//get count status
 
 Route::post('v1/user/uploadProfilePicture', 'Api\UserController@uploadProfilePicture');
+Route::post('v1/user/uploadInformation', 'Api\UserController@uploadInformation');
