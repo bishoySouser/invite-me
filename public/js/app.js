@@ -3406,16 +3406,12 @@ __webpack_require__.r(__webpack_exports__);
         for (var i = 0; i < res.data.list.length; i++) {
           _loop(i);
         }
-
-        console.log(JSON.stringify(_this2.blockApproved));
-        console.log(_this2.blockApproved.length);
       });
     },
     deleteMessage: function deleteMessage(value, id) {
       var _this3 = this;
 
       this.idItemDelete = id;
-      console.log(value);
       axios["delete"]('/v1/meeting/' + id).then(function (res) {
         var index = _this3.list.indexOf(value);
 
@@ -3762,7 +3758,6 @@ __webpack_require__.r(__webpack_exports__);
         _this3.datesEvent = res.data.dates;
         _this3.timePickerOptions.start = res.data.event.event_start;
         _this3.timePickerOptions.end = res.data.event.event_end;
-        console.log(res.data);
       });
     },
     onSubmit: function onSubmit() {
@@ -4067,8 +4062,17 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _countryList_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../countryList.json */ "./resources/js/countryList.json");
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var _countryList_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../countryList.json */ "./resources/js/countryList.json");
 var _countryList_json__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../../countryList.json */ "./resources/js/countryList.json", 1);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4212,9 +4216,14 @@ var _countryList_json__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE__*/__we
       typeNewPassword: 'password',
       //information
       firstName: this.user.first_name ? this.user.first_name : '',
-      LastName: this.user.last_name ? this.user.last_name : '',
-      companyName: this.user.companyName ? this.user.companyName : '',
-      country: this.user.country ? this.user.country : 'choose'
+      lastName: this.user.last_name ? this.user.last_name : '',
+      companyName: this.user.company_name ? this.user.company_name : '',
+      country: this.user.country ? this.user.country : 'choose',
+      //password
+      currentPass: '',
+      newPass: '',
+      rePass: '',
+      errMsg: ''
     };
   },
   computed: {},
@@ -4262,25 +4271,53 @@ var _countryList_json__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE__*/__we
       this.typeNewPassword = this.typeNewPassword === 'password' ? 'text' : 'password';
     },
     editInfo: function editInfo() {
-      var fd = new FormData();
-      var config = {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      };
-      fd.append("id", this.user.id);
-      fd.append("firstName", this.user.firstName);
-      fd.append("lastName", this.user.lastName);
-      fd.append("companyName", this.user.companyName);
-      fd.append("country", this.user.country);
       axios.post('v1/user/uploadInformation', {
-        firstName: this.user.firstName
-      }, config).then(function (res) {
-        console.log(res); //    location.reload();
+        id: this.user.id,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        company: this.companyName,
+        country: this.country
+      }).then(function (res) {
+        console.log(res);
+        toast.fire({
+          type: 'success',
+          title: res.data.msg
+        });
+      });
+    },
+    changePass: function changePass() {
+      var _this2 = this;
+
+      axios.post('v1/user/changePassword', {
+        id: this.user.id,
+        currentPassword: this.currentPass,
+        newPassword: this.newPass,
+        rePassword: this.rePass
+      }).then(function (res) {
+        if (res.status === 201) {
+          _this2.errMsg = res.data.msg;
+          _this2.currentPass = '';
+          _this2.newPass = '';
+          _this2.rePass = '';
+        }
+
+        console.log(res);
+
+        if (res.status === 200) {
+          toast.fire({
+            type: 'success',
+            title: res.data.msg
+          });
+          $(".alert").alert('close');
+          _this2.currentPass = '';
+          _this2.newPass = '';
+          _this2.rePass = '';
+        }
       });
     }
   }
 });
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
 
 /***/ }),
 
@@ -84368,7 +84405,7 @@ var render = function() {
           _c(
             "div",
             {
-              staticClass: "collapse show",
+              staticClass: "collapse",
               attrs: {
                 id: "collapseOne",
                 "aria-labelledby": "headingOne",
@@ -84501,7 +84538,7 @@ var render = function() {
           _c(
             "div",
             {
-              staticClass: "collapse",
+              staticClass: "collapse show",
               attrs: {
                 id: "collapseTwo",
                 "aria-labelledby": "headingTwo",
@@ -84510,179 +84547,190 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "card-body" }, [
-                _c("form", [
-                  _c("div", { staticClass: "form-group row" }, [
-                    _c("div", { staticClass: "form-group col-md-6" }, [
-                      _c("label", { attrs: { for: "inputFirstName" } }, [
-                        _vm._v("First Name")
-                      ]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.firstName,
-                            expression: "firstName"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "text",
-                          id: "inputFirstName",
-                          placeholder: "First name",
-                          maxlength: "30"
-                        },
-                        domProps: { value: _vm.firstName },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.firstName = $event.target.value
-                          }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group col-md-6" }, [
-                      _c("label", { attrs: { for: "inputLastName" } }, [
-                        _vm._v("Last Name")
-                      ]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.LastName,
-                            expression: "LastName"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "text",
-                          id: "inputLastName",
-                          placeholder: "Last name",
-                          maxlength: "30"
-                        },
-                        domProps: { value: _vm.LastName },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.LastName = $event.target.value
-                          }
-                        }
-                      })
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-group row" }, [
-                    _c("div", { staticClass: "form-group col-md-6" }, [
-                      _c("label", { attrs: { for: "inputCompany" } }, [
-                        _vm._v("Company Name")
-                      ]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.companyName,
-                            expression: "companyName"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "text",
-                          id: "inputCompany",
-                          placeholder: "Company name",
-                          maxlength: "30"
-                        },
-                        domProps: { value: _vm.companyName },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.companyName = $event.target.value
-                          }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group col-md-6" }, [
-                      _c("label", { attrs: { for: "inputCountry" } }, [
-                        _vm._v("Country")
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "select",
-                        {
+                _c(
+                  "form",
+                  {
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.editInfo()
+                      }
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c("div", { staticClass: "form-group col-md-6" }, [
+                        _c("label", { attrs: { for: "inputFirstName" } }, [
+                          _vm._v("First Name")
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
                           directives: [
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.country,
-                              expression: "country"
+                              value: _vm.firstName,
+                              expression: "firstName"
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { name: "country", id: "inputCountry" },
+                          attrs: {
+                            type: "text",
+                            id: "inputFirstName",
+                            placeholder: "First name",
+                            maxlength: "30"
+                          },
+                          domProps: { value: _vm.firstName },
                           on: {
-                            change: function($event) {
-                              var $$selectedVal = Array.prototype.filter
-                                .call($event.target.options, function(o) {
-                                  return o.selected
-                                })
-                                .map(function(o) {
-                                  var val = "_value" in o ? o._value : o.value
-                                  return val
-                                })
-                              _vm.country = $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.firstName = $event.target.value
                             }
                           }
-                        },
-                        [
-                          _c(
-                            "option",
-                            { attrs: { value: "choose", hidden: "" } },
-                            [_vm._v("choose")]
-                          ),
-                          _vm._v(" "),
-                          _vm._l(_vm.Countries, function(country) {
-                            return _c("option", { key: country.index }, [
-                              _vm._v(_vm._s(country.name))
-                            ])
-                          })
-                        ],
-                        2
-                      )
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-group row" }, [
-                    _c("div", { staticClass: "col-sm-12 text-right" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary",
-                          attrs: { type: "button" },
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group col-md-6" }, [
+                        _c("label", { attrs: { for: "inputLastName" } }, [
+                          _vm._v("Last Name")
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.lastName,
+                              expression: "lastName"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            id: "inputLastName",
+                            placeholder: "Last name",
+                            maxlength: "30"
+                          },
+                          domProps: { value: _vm.lastName },
                           on: {
-                            click: function($event) {
-                              return _vm.editInfo()
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.lastName = $event.target.value
                             }
                           }
-                        },
-                        [_vm._v("Save change")]
-                      )
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c("div", { staticClass: "form-group col-md-6" }, [
+                        _c("label", { attrs: { for: "inputCompany" } }, [
+                          _vm._v("Company Name")
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.companyName,
+                              expression: "companyName"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            id: "inputCompany",
+                            placeholder: "Company name",
+                            maxlength: "30"
+                          },
+                          domProps: { value: _vm.companyName },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.companyName = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group col-md-6" }, [
+                        _c("label", { attrs: { for: "inputCountry" } }, [
+                          _vm._v("Country")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.country,
+                                expression: "country"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { name: "country", id: "inputCountry" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.country = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c(
+                              "option",
+                              { attrs: { value: "choose", hidden: "" } },
+                              [_vm._v("choose")]
+                            ),
+                            _vm._v(" "),
+                            _vm._l(_vm.Countries, function(country) {
+                              return _c("option", { key: country.index }, [
+                                _vm._v(_vm._s(country.name))
+                              ])
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c("div", { staticClass: "col-sm-12 text-right" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: {
+                              type: "submit",
+                              disabled:
+                                _vm.firstName.length < 3 ||
+                                _vm.lastName.length < 3
+                            }
+                          },
+                          [_vm._v("Save change")]
+                        )
+                      ])
                     ])
-                  ])
-                ])
+                  ]
+                )
               ])
             ]
           )
@@ -84705,80 +84753,378 @@ var render = function() {
               _c("div", { staticClass: "card-body" }, [
                 _vm._m(3),
                 _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c(
-                    "label",
-                    { staticClass: "col-sm-3", attrs: { for: "oldPassword" } },
-                    [_vm._v("Current password")]
-                  ),
-                  _vm._v(" "),
-                  _c("input", {
-                    staticClass: "form-control col-sm-4 d-inline",
-                    attrs: {
-                      type: _vm.typePassword,
-                      id: "oldPassword",
-                      placeholder: "old password"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticStyle: {
-                        background: "none",
-                        border: "0px",
-                        color: "#007bff",
-                        button: "focus {outline:0 !important"
-                      },
-                      domProps: { innerHTML: _vm._s(_vm.eyaPassword) },
-                      on: {
-                        click: function($event) {
-                          return _vm.showPassword()
-                        }
+                _c(
+                  "form",
+                  {
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
                       }
-                    },
-                    [_vm._v(_vm._s(_vm.eyaPassword))]
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c(
-                    "label",
-                    { staticClass: "col-sm-3", attrs: { for: "newPassword" } },
-                    [_vm._v("New password")]
-                  ),
-                  _vm._v(" "),
-                  _c("input", {
-                    staticClass: "form-control col-sm-4 d-inline",
-                    attrs: {
-                      type: _vm.typeNewPassword,
-                      id: "newPassword",
-                      placeholder: "new password"
                     }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticStyle: {
-                        background: "none",
-                        border: "0px",
-                        color: "#007bff"
-                      },
-                      domProps: { innerHTML: _vm._s(_vm.eyaNewPassword) },
-                      on: {
-                        click: function($event) {
-                          return _vm.showNewPassword()
+                  },
+                  [
+                    _vm.errMsg
+                      ? _c(
+                          "div",
+                          {
+                            staticClass:
+                              "alert alert-danger alert-dismissible fade show",
+                            attrs: { id: "alert", role: "alert" }
+                          },
+                          [
+                            _vm._v(
+                              "\r\n                                    " +
+                                _vm._s(_vm.errMsg) +
+                                "\r\n                                    "
+                            ),
+                            _vm._m(4)
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-sm-3",
+                          attrs: { for: "oldPassword" }
+                        },
+                        [_vm._v("Current password")]
+                      ),
+                      _vm._v(" "),
+                      _vm.typePassword === "checkbox"
+                        ? _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.currentPass,
+                                expression: "currentPass"
+                              }
+                            ],
+                            staticClass: "form-control d-inline col-sm-4",
+                            attrs: {
+                              id: "oldPassword",
+                              placeholder: "old password",
+                              autocomplete: "current-password",
+                              type: "checkbox"
+                            },
+                            domProps: {
+                              checked: Array.isArray(_vm.currentPass)
+                                ? _vm._i(_vm.currentPass, null) > -1
+                                : _vm.currentPass
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.currentPass,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 &&
+                                      (_vm.currentPass = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.currentPass = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.currentPass = $$c
+                                }
+                              }
+                            }
+                          })
+                        : _vm.typePassword === "radio"
+                        ? _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.currentPass,
+                                expression: "currentPass"
+                              }
+                            ],
+                            staticClass: "form-control d-inline col-sm-4",
+                            attrs: {
+                              id: "oldPassword",
+                              placeholder: "old password",
+                              autocomplete: "current-password",
+                              type: "radio"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.currentPass, null)
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.currentPass = null
+                              }
+                            }
+                          })
+                        : _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.currentPass,
+                                expression: "currentPass"
+                              }
+                            ],
+                            staticClass: "form-control d-inline col-sm-4",
+                            attrs: {
+                              id: "oldPassword",
+                              placeholder: "old password",
+                              autocomplete: "current-password",
+                              type: _vm.typePassword
+                            },
+                            domProps: { value: _vm.currentPass },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.currentPass = $event.target.value
+                              }
+                            }
+                          }),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticStyle: {
+                            background: "none",
+                            border: "0px",
+                            color: "#007bff",
+                            button: "focus {outline:0 !important"
+                          },
+                          domProps: { innerHTML: _vm._s(_vm.eyaPassword) },
+                          on: {
+                            click: function($event) {
+                              return _vm.showPassword()
+                            }
+                          }
+                        },
+                        [_vm._v(_vm._s(_vm.eyaPassword))]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-sm-3",
+                          attrs: { for: "newPassword" }
+                        },
+                        [_vm._v("New password")]
+                      ),
+                      _vm._v(" "),
+                      _vm.typeNewPassword === "checkbox"
+                        ? _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newPass,
+                                expression: "newPass"
+                              }
+                            ],
+                            staticClass: "form-control d-inline col-sm-4",
+                            attrs: {
+                              id: "newPassword",
+                              placeholder: "new password",
+                              autocomplete: "new-password",
+                              type: "checkbox"
+                            },
+                            domProps: {
+                              checked: Array.isArray(_vm.newPass)
+                                ? _vm._i(_vm.newPass, null) > -1
+                                : _vm.newPass
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.newPass,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 && (_vm.newPass = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.newPass = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.newPass = $$c
+                                }
+                              }
+                            }
+                          })
+                        : _vm.typeNewPassword === "radio"
+                        ? _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newPass,
+                                expression: "newPass"
+                              }
+                            ],
+                            staticClass: "form-control d-inline col-sm-4",
+                            attrs: {
+                              id: "newPassword",
+                              placeholder: "new password",
+                              autocomplete: "new-password",
+                              type: "radio"
+                            },
+                            domProps: { checked: _vm._q(_vm.newPass, null) },
+                            on: {
+                              change: function($event) {
+                                _vm.newPass = null
+                              }
+                            }
+                          })
+                        : _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newPass,
+                                expression: "newPass"
+                              }
+                            ],
+                            staticClass: "form-control d-inline col-sm-4",
+                            attrs: {
+                              id: "newPassword",
+                              placeholder: "new password",
+                              autocomplete: "new-password",
+                              type: _vm.typeNewPassword
+                            },
+                            domProps: { value: _vm.newPass },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.newPass = $event.target.value
+                              }
+                            }
+                          }),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "d-inline",
+                          staticStyle: {
+                            background: "none",
+                            border: "0px",
+                            color: "#007bff"
+                          },
+                          attrs: { type: "button" },
+                          domProps: { innerHTML: _vm._s(_vm.eyaNewPassword) },
+                          on: {
+                            click: function($event) {
+                              return _vm.showNewPassword()
+                            }
+                          }
+                        },
+                        [_vm._v(_vm._s(_vm.eyaNewPassword))]
+                      ),
+                      _vm._v(" "),
+                      _vm.newPass.length < 6
+                        ? _c(
+                            "small",
+                            {
+                              staticClass:
+                                "form-text text-muted offset-sm-3 col-sm-4"
+                            },
+                            [
+                              _vm._v(
+                                "The new password must be at least 6 characters."
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-sm-3",
+                          attrs: { for: "againPassword" }
+                        },
+                        [_vm._v("Re-enter new password")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.rePass,
+                            expression: "rePass"
+                          }
+                        ],
+                        staticClass: "form-control col-sm-4 d-inline",
+                        attrs: {
+                          type: "password",
+                          id: "againPassword",
+                          placeholder: "reenter password",
+                          autocomplete: "new-password"
+                        },
+                        domProps: { value: _vm.rePass },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.rePass = $event.target.value
+                          }
                         }
-                      }
-                    },
-                    [_vm._v(_vm._s(_vm.eyaNewPassword))]
-                  )
-                ]),
-                _vm._v(" "),
-                _vm._m(4),
-                _vm._v(" "),
-                _vm._m(5)
+                      }),
+                      _vm._v(" "),
+                      _vm.newPass != _vm.rePass
+                        ? _c(
+                            "small",
+                            {
+                              staticClass:
+                                "form-text text-danger offset-sm-3 col-sm-4"
+                            },
+                            [_vm._v("Password doesn't match confirmation")]
+                          )
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c("div", { staticClass: "col-sm-12 text-right" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: {
+                              type: "button",
+                              disabled:
+                                _vm.currentPass.length < 6 ||
+                                _vm.newPass.length < 6 ||
+                                _vm.rePass.length < 6
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.changePass()
+                              }
+                            }
+                          },
+                          [_vm._v("Change password")]
+                        )
+                      ])
+                    ])
+                  ]
+                )
               ])
             ]
           )
@@ -84800,11 +85146,11 @@ var staticRenderFns = [
           _c(
             "button",
             {
-              staticClass: "btn btn-link",
+              staticClass: "btn btn-link collapsed",
               attrs: {
                 "data-toggle": "collapse",
                 "data-target": "#collapseOne",
-                "aria-expanded": "true",
+                "aria-expanded": "false",
                 "aria-controls": "collapseOne"
               }
             },
@@ -84829,16 +85175,16 @@ var staticRenderFns = [
           _c(
             "button",
             {
-              staticClass: "btn btn-link collapsed",
+              staticClass: "btn btn-link",
               attrs: {
                 "data-toggle": "collapse",
                 "data-target": "#collapseTwo",
-                "aria-expanded": "false",
+                "aria-expanded": "true",
                 "aria-controls": "collapseTwo"
               }
             },
             [
-              _vm._v("\r\n                        Edit Information "),
+              _vm._v("\r\n                        Edit information "),
               _c("i", { staticClass: "fas fa-user-edit" })
             ]
           )
@@ -84891,36 +85237,18 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c(
-        "label",
-        { staticClass: "col-sm-3", attrs: { for: "againPassword" } },
-        [_vm._v("Re-enter new password")]
-      ),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control col-sm-4 d-inline",
+    return _c(
+      "button",
+      {
+        staticClass: "close",
         attrs: {
-          type: "password",
-          id: "againPassword",
-          placeholder: "reenter password"
+          type: "button",
+          "data-dismiss": "alert",
+          "aria-label": "Close"
         }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row" }, [
-      _c("div", { staticClass: "col-sm-12 text-right" }, [
-        _c(
-          "button",
-          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-          [_vm._v("Change password")]
-        )
-      ])
-    ])
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   }
 ]
 render._withStripped = true

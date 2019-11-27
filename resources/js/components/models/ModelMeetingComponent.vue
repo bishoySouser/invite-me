@@ -159,7 +159,7 @@ export default {
                 this.datesEvent = res.data.dates
                 this.timePickerOptions.start = res.data.event.event_start
                 this.timePickerOptions.end = res.data.event.event_end
-                console.log(res.data)
+               
                 })
             },
 

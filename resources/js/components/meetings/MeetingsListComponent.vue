@@ -183,13 +183,11 @@ export default {
                     // console.log(newDate)
                     // console.log(newtime)
                 }
-                console.log(JSON.stringify(this.blockApproved))
-                console.log(this.blockApproved.length)
             })
         },
         deleteMessage(value,id){
             this.idItemDelete = id;
-            console.log(value)
+
             axios.delete('/v1/meeting/' + id)
             .then((res) => {
                 let index = this.list.indexOf(value)

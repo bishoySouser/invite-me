@@ -6,13 +6,13 @@
                 <div class="card">
                     <div class="card-header" id="headingOne">
                     <h5 class="mb-0">
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                         Change profile picture <i class="fas fa-camera-retro"></i>
                         </button>
                     </h5>
                     </div>
 
-                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                     <div class="card-body">
                         <div class='row'>
                             <div class="col-sm-6 text-right">
@@ -41,14 +41,14 @@
                 <div class="card">
                     <div class="card-header" id="headingTwo">
                     <h5 class="mb-0">
-                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Edit Information <i class="fas fa-user-edit"></i>
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                        Edit information <i class="fas fa-user-edit"></i>
                         </button>
                     </h5>
                     </div>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
                     <div class="card-body">
-                    <form>
+                    <form v-on:submit.prevent='editInfo()'>
                         <div class="form-group row">
                             <div class="form-group col-md-6">
                                 <label for="inputFirstName">First Name</label>
@@ -56,7 +56,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputLastName">Last Name</label>
-                                <input type="text" class="form-control" id="inputLastName" v-model="LastName" placeholder="Last name" maxlength="30">
+                                <input type="text" class="form-control" id="inputLastName" v-model="lastName" placeholder="Last name" maxlength="30">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -75,7 +75,7 @@
                     
                         <div class="form-group row">
                             <div class="col-sm-12 text-right">
-                            <button type="button" @click='editInfo()' class="btn btn-primary">Save change</button>
+                            <button type="submit" class="btn btn-primary" :disabled='firstName.length < 3 || lastName.length < 3'>Save change</button>
                             </div>
                         </div>
                         </form>
@@ -95,27 +95,36 @@
                             <blockquote class="blockquote">
                                 <p class="mb-0">A strong password helps prevent unauthorized access to your email account</p>
                             </blockquote>
-                            
+                            <form v-on:submit.prevent>
+                                <div v-if='errMsg' class="alert alert-danger alert-dismissible fade show" id='alert' role="alert">
+                                    {{errMsg}}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
                                 <div class="form-group">
                                     <label for="oldPassword" class='col-sm-3'>Current password</label>
-                                    <input :type="typePassword" class="form-control col-sm-4 d-inline" id="oldPassword" placeholder="old password">
+                                    <input :type="typePassword" v-model="currentPass" class="form-control d-inline col-sm-4" id="oldPassword" placeholder="old password" autocomplete="current-password">
                                     <button @click="showPassword()" v-html="eyaPassword" style="background: none;border: 0px;color: #007bff;button:focus {outline:0 !important;}">{{eyaPassword}}</button>
                                 </div>
                                 <div class="form-group">
                                     <label for="newPassword" class='col-sm-3'>New password</label>
-                                    <input :type="typeNewPassword" class="form-control col-sm-4 d-inline" id="newPassword" placeholder="new password">
-                                    <button @click="showNewPassword()" v-html="eyaNewPassword" style="background: none;border: 0px;color: #007bff">{{eyaNewPassword}}</button>
+                                    <input :type="typeNewPassword" v-model="newPass" class="form-control d-inline col-sm-4" id="newPassword" placeholder="new password" autocomplete="new-password">
+                                    <button type='button' class='d-inline' @click="showNewPassword()" v-html="eyaNewPassword" style="background: none;border: 0px;color: #007bff">{{eyaNewPassword}}</button>
+                                    <small v-if="newPass.length < 6" class='form-text text-muted offset-sm-3 col-sm-4'>The new password must be at least 6 characters.</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="againPassword" class='col-sm-3'>Re-enter new password</label>
-                                    <input type="password" class="form-control col-sm-4 d-inline" id="againPassword" placeholder="reenter password">
+                                    <input type="password" v-model="rePass" class="form-control col-sm-4 d-inline" id="againPassword" placeholder="reenter password" autocomplete="new-password">
+                                    <small v-if="newPass != rePass" class='form-text text-danger offset-sm-3 col-sm-4'>Password doesn't match confirmation</small>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-12 text-right">
-                                    <button type="submit" class="btn btn-primary">Change password</button>
+                                    <button type="button" class="btn btn-primary" @click='changePass()' :disabled='currentPass.length < 6 || newPass.length < 6 || rePass.length < 6'>Change password</button>
                                     </div>
                                 </div>
-                            
+                                
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -144,9 +153,14 @@ export default {
             typeNewPassword: 'password',
             //information
             firstName: this.user.first_name ? this.user.first_name : '',
-            LastName: this.user.last_name ? this.user.last_name : '',
-            companyName: this.user.companyName ? this.user.companyName : '',
+            lastName: this.user.last_name ? this.user.last_name : '',
+            companyName: this.user.company_name ? this.user.company_name : '',
             country: this.user.country ? this.user.country : 'choose',
+            //password
+            currentPass:'',
+            newPass:'',
+            rePass:'',
+            errMsg:''
         }
     },
     computed:{
@@ -176,7 +190,7 @@ export default {
             fd.append("id", this.user.id);
             axios.post('v1/user/uploadProfilePicture', fd, config)
                 .then(response => {
-
+                    
                    location.reload();
                 });
         },
@@ -188,21 +202,48 @@ export default {
             this.eyaNewPassword = this.eyaNewPassword === '<i class="fas fa-eye-slash">' ? '<i class="fas fa-eye">' : '<i class="fas fa-eye-slash">'
             this.typeNewPassword = this.typeNewPassword === 'password' ? 'text' : 'password'
         },
-        editInfo(){
-            const fd = new FormData();
-            const config = { headers: { "Content-Type": "multipart/form-data" } };
-            fd.append("id", this.user.id);
-            fd.append("firstName", this.user.firstName);
-            fd.append("lastName", this.user.lastName);
-            fd.append("companyName", this.user.companyName);
-            fd.append("country", this.user.country);
+        editInfo(){           
             axios.post('v1/user/uploadInformation', {
-                firstName : this.user.firstName,
-            }, config)
+                id: this.user.id,
+                firstName:  this.firstName,
+                lastName:  this.lastName,
+                company:  this.companyName,
+                country:  this.country
+            })
                 .then(res => {
                     console.log(res)
-                //    location.reload();
+                   toast.fire({
+                    type: 'success',
+                    title: res.data.msg
+                    })
                 });
+        },
+        changePass(){
+            axios.post('v1/user/changePassword', {
+                id: this.user.id,
+                currentPassword: this.currentPass,
+                newPassword: this.newPass,
+                rePassword: this.rePass
+            })
+            .then(res => {
+                if(res.status === 201){
+                    this.errMsg = res.data.msg;
+                    this.currentPass = ''
+                    this.newPass = ''
+                    this.rePass = ''
+                }
+                console.log(res)
+                if(res.status === 200){
+                    toast.fire({
+                    type: 'success',
+                    title: res.data.msg
+                    })
+                    $(".alert").alert('close')
+                    this.currentPass = ''
+                    this.newPass = ''
+                    this.rePass = ''
+                }
+            })
         }
 
     }

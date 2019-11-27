@@ -53,3 +53,5 @@ Route::get('v1/admin/statusCount', 'Api\AdminController@statusCount');//get coun
 
 Route::post('v1/user/uploadProfilePicture', 'Api\UserController@uploadProfilePicture');
 Route::post('v1/user/uploadInformation', 'Api\UserController@uploadInformation');
+
+Route::post('v1/user/changePassword' , 'Api\UserController@changePassword');
