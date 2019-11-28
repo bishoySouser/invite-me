@@ -13,6 +13,9 @@ use App\Mail\SendMailable;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use JWTFactory;
+use JWTAuth;
+
 class AdminController extends Controller
 {
     public function useradd(Request $request){
@@ -46,18 +49,22 @@ class AdminController extends Controller
             'user_type' => $user_type,
             'password' => $password
         ]);
+        
         Mail::to($email)->send(new SendMailable($first_name,$last_name,$email,$passUser));
         //response
+        $token = JWTAuth::fromUser($user);
         if ($user->save()) {
             $response = [
                 'msg' => 'User created',
-                'user' => $user
+                'user' => $user,
+                'token' => $token
             ];
             return response()->json($response, 201);
         }
 
         $response = [
-            'msg' => 'An error occurred'
+            'msg' => 'An error occurred',
+            
         ];
 
         return response()->json($response, 404);
