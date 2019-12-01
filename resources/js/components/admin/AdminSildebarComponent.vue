@@ -33,16 +33,27 @@
             <router-link to="/admin/setting" class="nav-link" @click="activeTab = '4'" activeClass="nav-item active">
               <i class="fas fa-cogs"></i>
               <p>
-                Setting
+                Event setting
               </p>
             </router-link>
           </li>
+          <router-link to="/admin/profileEdit" class="nav-link" @click="activeTab = '5'" activeClass="nav-item active">
+              <i class="fas fa-cogs"></i>
+              <p>
+                Edit profile
+              </p>
+            </router-link>
     </div> 
 </template>
 
 <script>
 export default {
     name: 'AdminSilder',
+    props:[
+
+      'invitee'
+    ]
+    ,
     data () {
         return{
           activeTab: '1',

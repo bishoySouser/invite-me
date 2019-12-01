@@ -55,3 +55,5 @@ Route::post('v1/user/uploadProfilePicture', 'Api\UserController@uploadProfilePic
 Route::post('v1/user/uploadInformation', 'Api\UserController@uploadInformation');
 
 Route::post('v1/user/changePassword' , 'Api\UserController@changePassword');
+
+Route::post('v1/user/login', 'Api\UserController@login'); // api login

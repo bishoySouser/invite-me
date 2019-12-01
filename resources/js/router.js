@@ -7,6 +7,7 @@ import DashboardPage from './components/admin/pages/DashboardPage.vue'
 import UsersPage from './components/admin/pages/UsersPage.vue'
 import MeetingsPage from './components/admin/pages/MeetingsPage.vue'
 import SettingPage from './components/admin/pages/SettingPage.vue'
+import EditProfile from './components/admin/pages/EditProfile.vue'
 
 Vue.use(Router);
 
@@ -43,6 +44,11 @@ export default new Router({
       path: '/admin/setting',
       name: 'SettingPage',
       component: SettingPage,
+    },
+    {
+      path: '/admin/profileEdit',
+      name: 'EditProfile',
+      component: EditProfile
     }
   ],
 });

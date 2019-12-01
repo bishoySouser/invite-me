@@ -6,12 +6,39 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use File;
+use Validator;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMailable;
 
+use JWTFactory;
+use JWTAuth;
+
 class UserController extends Controller
 {
+    public function login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255',
+            'password' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $credentials = $request->only('email','password');
+        
+        try{
+            if(!$token = JWTAuth::attempt($credentials)){
+                return response()->json(['msg' => 'invalid username and password'], 401);
+            }
+        }catch(JWTException $e){
+            return response()->json(['msg' => 'could not create token'], 500);
+        }
+        
+        return response()->json( compact('token'));
+    }
+
     public function userList($id)
     {
         $user_type = User::where('id',$id)->pluck('user_type');
