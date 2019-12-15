@@ -37,12 +37,14 @@
               </p>
             </router-link>
           </li>
-          <router-link to="/admin/profileEdit" class="nav-link" @click="activeTab = '5'" activeClass="nav-item active">
-              <i class="fas fa-cogs"></i>
-              <p>
-                Edit profile
-              </p>
+          <li>
+            <router-link to="/admin/profileEdit" class="nav-link" @click="activeTab = '5'" activeClass="nav-item active">
+                <i class="fas fa-user-edit"></i>
+                <p>
+                  Edit profile
+                </p>
             </router-link>
+          </li>
     </div> 
 </template>
 
