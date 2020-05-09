@@ -3,3 +3,5 @@ URL: http://sheltered-river-36939.herokuapp.com/login
 Admin:<br>
 Email: admin@admin.com <br>
 Pass: 123456789 <br>
+User: test@test.com <br>
+Pass: 123456789 <br>
